@@ -1,0 +1,32 @@
+fireball: #技能书id
+  mm-skill: "MM_Fireball"
+  BaseMultiplier: 100
+  cooldown: 5.0
+  mana: 20
+  enhance-multiplier: 10 # 强化一级增加 10的倍率
+  tags:
+    - "伤害"
+    - "范围"
+    - "火"
+
+  LevelUP:
+    MaxLevel: 5
+    ReduceMana: 1
+    ReduceCd: 0.5
+    MultiplierUp: 10
+
+heal:
+  mm-skill: "MM_Heal"
+  BaseMultiplier: 100
+  cooldown: 10.0
+  mana: 10
+  enhance-multiplier: 0.0
+  tags:
+    - "治疗"
+    - "辅助"
+
+  LevelUP:
+    MaxLevel: 5
+    ReduceMana: 1
+    ReduceCd: 0.5
+    MultiplierUp: 10

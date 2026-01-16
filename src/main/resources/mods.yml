@@ -1,0 +1,90 @@
+# MOD (灵石/振幅晶体) 配置文件
+# 极性说明: V (Madurai/攻击), D (Vazarin/防御), - (Naramon/通用), = (Zenurik/辅助)
+
+# --- 攻击类 ---
+Serration: # MOD内部ID: 膛线
+  display: "&c&l膛线"
+  material: "PAPER"
+  rarity: "精良"         # 影响升级时的 Endo 消耗倍率
+  polarity: "V"         # 极性，用于容量减半逻辑
+  base-drain: 4         # 0级时的容量消耗
+  drain-step: 1         # 每升一级增加的容量消耗 (Drain = base + rank * step)
+  attributes:           # 每级增加的属性数值
+    "伤害加成": 15.0     # 每级 +15% (10级时 = 165.0%)
+  max-level: 10
+  tags: ["攻击", "基础"]
+
+SplitChamber: # 多重射击/最终伤害
+  display: "&6&l分裂弹头"
+  material: "PAPER"
+  rarity: "史诗"
+  polarity: "V"
+  base-drain: 10
+  drain-step: 1
+  attributes:
+    "最终伤害": 15.0     # 每级 +15%
+  max-level: 5
+  tags: ["攻击", "多重"]
+
+# --- 技能类 ---
+Streamline: # 技能效率
+  display: "&d&l简化"
+  material: "PAPER"
+  rarity: "精良"
+  polarity: "="
+  base-drain: 4
+  drain-step: 1
+  attributes:
+    "技能效率": 5.0      # 每级 +5% (5级时 = 30%)
+  max-level: 5
+  tags: ["技能", "效率"]
+
+Stretch: # 额外范围
+  display: "&a&l延伸"
+  material: "PAPER"
+  rarity: "普通"
+  polarity: "-"
+  base-drain: 2
+  drain-step: 1
+  attributes:
+    "额外范围": 7.5      # 每级 +7.5% (5级时 = 45%)
+  max-level: 5
+  tags: ["技能", "范围"]
+
+FleetingExpertise: # 弹瞬瞬变 (复合卡)
+  display: "&b&l瞬时转场"
+  material: "PAPER"
+  rarity: "史诗"
+  polarity: "="
+  base-drain: 6
+  drain-step: 1
+  attributes:
+    "技能效率": 10.0     # 正面属性: 每级 +10%
+    "冷却缩减": -10.0    # 负面属性: 每级 -10% (Warframe经典的强力卡带副作用)
+  max-level: 5
+  tags: ["技能", "堕落"]
+
+# --- 生存类 ---
+Vitality: # 生命
+  display: "&4&l生命力"
+  material: "PAPER"
+  rarity: "普通"
+  polarity: "D"
+  base-drain: 2
+  drain-step: 1
+  attributes:
+    "最大生命": 40.0     # 每级 +40点
+  max-level: 10
+  tags: ["生存"]
+
+Flow: # 蓝量
+  display: "&b&l川流不息"
+  material: "PAPER"
+  rarity: "普通"
+  polarity: "-"
+  base-drain: 2
+  drain-step: 1
+  attributes:
+    "魔力上限": 25.0     # 每级 +25点
+  max-level: 5
+  tags: ["生存", "能量"]
