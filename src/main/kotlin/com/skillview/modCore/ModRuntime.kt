@@ -45,6 +45,8 @@ object ModRuntime {
         val extraRange: Double  get() = values.getOrDefault("额外范围", 0.0)
         val critRate: Double    get() = values.getOrDefault("暴击几率", 0.0)
         val critDamage: Double  get() = values.getOrDefault("暴击伤害", 0.0)
+        val skillPower: Double   get() = values.getOrDefault("技能强度", 0.0)
+        val manaRegen: Double    get() = values.getOrDefault("魔力恢复", 0.0)
     }
 
     // --- [核心：进退服逻辑完善] ---

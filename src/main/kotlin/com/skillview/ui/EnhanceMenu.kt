@@ -3,7 +3,7 @@ package com.skillview.ui
 import com.skillview.SkillStorage.getStarPoints
 import com.skillview.SkillStorage.takeStarPoints
 import com.skillview.enhanceCore.modCalculation
-import com.skillview.enhanceCore.skillencCalculation
+import com.skillview.enhanceCore.calculateSkillBookCost
 import com.skillview.expansion.*
 import com.skillview.rpgCore.RpgConfig
 import com.skillview.rpgCore.RpgDefinitions
@@ -184,7 +184,7 @@ object SkillUpgradeMenu {
                     // 2. 完全匹配：必须完全等于 "技能书"
                     type == "技能书" -> {
                         // --- 逻辑：技能书专属强化 ---
-                        val cost = skillencCalculation(item)
+                        val cost = calculateSkillBookCost(item)
                         val level = item.getDeepInt(RpgDefinitions.SkillBookNBT.LEVEL,0)
                         val skillId = item.getSkillId()
                         val setting = RpgConfig.getSkill(skillId) ?: return@onClick

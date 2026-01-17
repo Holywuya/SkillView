@@ -3,7 +3,6 @@ package com.skillview.ui
 import com.skillview.SkillStorage
 import com.skillview.expansion.getModCost
 import com.skillview.expansion.hasTagValue
-import com.skillview.listener.APListener.syncModStatsToAP
 import com.skillview.modCore.ModRuntime
 import com.skillview.modCore.ModRuntime.recalculate
 import com.skillview.rpgCore.RpgDefinitions
@@ -91,7 +90,6 @@ object ModEquipMenu {
                     }
                     SkillStorage.saveModLoadout(player, newLoadout)
                     recalculate(player)
-                    syncModStatsToAP(player)
                     player.sendMessage("&aMod栏已同步到云端数据库！".colored())
                 }
             }

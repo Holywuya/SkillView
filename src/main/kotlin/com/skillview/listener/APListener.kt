@@ -1,25 +1,25 @@
 package com.skillview.listener
 
 import com.skillview.modCore.ModRuntime
-import org.bukkit.entity.LivingEntity
+import com.skillview.modCore.ModRuntime.recalculate
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerJoinEvent
 import org.serverct.ersha.api.AttributeAPI
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.submit
-
+import taboolib.module.configuration.Config
+import taboolib.module.configuration.Configuration
+/**
 object APListener {
 
-    // 统一定义 AP 属性来源，方便后续覆盖或删除
+    // 统一定义 AP 属性来源
     private const val ATTR_SOURCE = "SkillView_MOD"
 
-    /**
-     * 玩家进服时，延迟同步 MOD 属性到 AP 系统
-     */
+    @Config("config.yml")
+    lateinit var conf: Configuration
     @SubscribeEvent
     fun onJoin(e: PlayerJoinEvent) {
         val player = e.player
-        // 延迟 100 刻（5秒）确保 ModRuntime 已经完成初始化且 AP 插件已就绪
         submit(delay = 100L) {
             if (player.isOnline) {
                 syncModStatsToAP(player)
@@ -27,39 +27,45 @@ object APListener {
         }
     }
 
-    /**
-     * 将 ModRuntime 里的属性数据同步给 AttributePlus
-     */
     fun syncModStatsToAP(player: Player) {
-        // 1. 获取玩家当前的所有 MOD 加成数据
+        recalculate(player)
+        // 1. 获取 MOD 数据
         val modStats = ModRuntime.getStats(player)
 
-        // 2. 获取 AP 属性数据对象
-        val attrData = AttributeAPI.getAttrData(player as LivingEntity)
+        // 2. 获取 AP 数据对象
+        val attrData = AttributeAPI.getAttrData(player)
 
-        // 3. 构建属性映射 Map (AP 的格式要求: HashMap<属性名, Array<Number>>)
-        val attributeMap = HashMap<String, Array<Number>>()
+        // 3. 【修改处】构建 List<String> 而不是 Map
+        // AP 的标准格式通常是: "属性名: 数值" (中间有冒号和空格)
+        val attributeList = ArrayList<String>()
 
         // --- 基础生存与消耗 ---
-        if (modStats.extraMana != 0.0)   attributeMap["魔力上限"] = arrayOf(modStats.extraMana)
-        if (modStats.maxHp != 0.0)       attributeMap["生命力"] = arrayOf(modStats.maxHp)
-        if (modStats.efficiency != 0.0)  attributeMap["技能效率"] = arrayOf(modStats.efficiency)
-        if (modStats.cdReduction != 0.0) attributeMap["冷却缩减"] = arrayOf(modStats.cdReduction)
+        if (modStats.extraMana != 0.0)   attributeList.add("魔力上限:${modStats.extraMana}")
+        if (modStats.maxHp != 0.0)       attributeList.add("生命力:${modStats.maxHp}")
+        if (modStats.efficiency != 0.0)  attributeList.add("技能效率:${modStats.efficiency}")
+        if (modStats.cdReduction != 0.0) attributeList.add("冷却缩减:${modStats.cdReduction}")
 
         // --- 伤害与战斗加成 ---
-        if (modStats.damageBonus != 0.0) attributeMap["伤害加成"] = arrayOf(modStats.damageBonus)
-        if (modStats.damageMore != 0.0)  attributeMap["最终伤害"] = arrayOf(modStats.damageMore)
-        if (modStats.extraRange != 0.0)  attributeMap["额外范围"] = arrayOf(modStats.extraRange)
+        if (modStats.damageBonus != 0.0) attributeList.add("伤害加成:${modStats.damageBonus}")
+        if (modStats.damageMore != 0.0)  attributeList.add("最终伤害:${modStats.damageMore}")
+        if (modStats.extraRange != 0.0)  attributeList.add("额外范围:${modStats.extraRange}")
 
         // --- 暴击系统 ---
-        if (modStats.critRate != 0.0)    attributeMap["暴击几率"] = arrayOf(modStats.critRate)
-        if (modStats.critDamage != 0.0)  attributeMap["暴伤倍率"] = arrayOf(modStats.critDamage)
+        if (modStats.critRate != 0.0)    attributeList.add("暴击几率:${modStats.critRate}")
+        if (modStats.critDamage != 0.0)  attributeList.add("暴伤倍率:${modStats.critDamage}")
 
-        // 4. 调用 AP 接口注入属性
-        // 如果 attributeMap 为空，AP 会自动清理该 Source 的属性
-        AttributeAPI.addSourceAttribute(attrData, ATTR_SOURCE, attributeMap, true)
+        // 4. 调用 AP 接口
+        // 如果 List 为空，AP 同样会清理该 Source 的属性
+        AttributeAPI.addPersistentSourceAttribute(
+            attrData,
+            ATTR_SOURCE,
+            attributeList, // 这里传入 List<String>
+            -1.0           // 【修改处】这里传入 Double 类型 (-1.0)
+        )
 
-        // 5. DEBUG 提示
-        // println("[Debug] 已同步玩家 ${player.name} 的 MOD 属性至 AttributePlus")
+        if (conf.getBoolean("DEBUG")) {
+            println("[Debug] 已同步玩家 ${player.name} 的 MOD 属性至 AP (共 ${attributeList.size} 条词条)")
+        }
     }
 }
+**/

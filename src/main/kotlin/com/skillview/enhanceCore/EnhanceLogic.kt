@@ -4,14 +4,13 @@ import com.skillview.expansion.getDeepInt
 import com.skillview.expansion.getDeepString
 import com.skillview.rpgCore.RpgDefinitions
 import org.bukkit.inventory.ItemStack
-import kotlin.math.pow
 
 /**
  * 强化/升级消耗计算结果
  */
 data class SkillEnhanceCost(
-    val endo: Double,      // 所需技能碎片（内融核心）
-    val credits: Double,   // 所需货币
+    val endo: Long,      // 所需技能碎片（内融核心）
+    val credits: Long,   // 所需货币
     val nextLevel: Int     // 目标等级
 )
 
@@ -25,7 +24,13 @@ data class SkillBookCost(
  * 前期低成本，后期指数爆炸 + 品质倍率影响
  */
 fun modCalculation(item: ItemStack): SkillEnhanceCost {
-    val currentLevel = item.getDeepInt(RpgDefinitions.ModNBT.LEVEL, 0)
+    // 常量与限制
+    val MAX_LEVEL = 60
+    val BASE_ENDO = 10L
+    val CREDITS_MULTIPLIER = 5L
+
+    val currentLevelRaw = item.getDeepInt(RpgDefinitions.ModNBT.LEVEL, 0)
+    val currentLevel = currentLevelRaw.coerceAtLeast(0).coerceAtMost(MAX_LEVEL)
 
     // 品质倍率表（越高后期越夸张）
     val rarityMultiplier = when (item.getDeepString("品质", "普通")) {
@@ -37,17 +42,19 @@ fun modCalculation(item: ItemStack): SkillEnhanceCost {
         else   -> 1.0
     }
 
-    // 基础配置
-    val BASE_ENDO = 10.0
-
-    // 纯指数成长：每级翻倍
-    val rawEndo = BASE_ENDO * 2.0.pow(currentLevel.toDouble())
+    // 使用整数位移实现 2^level，避免浮点幂带来的精度问题
+    val rawEndo = if (currentLevel >= 0) {
+        // 1L shl currentLevel 等于 2^currentLevel（当 currentLevel 合理受限时安全）
+        BASE_ENDO * (1L shl currentLevel)
+    } else {
+        BASE_ENDO
+    }
 
     // 应用品质倍率并取整（最低 1）
-    val finalEndo = (rawEndo * rarityMultiplier).toInt().coerceAtLeast(1).toDouble()
+    val finalEndo = (rawEndo * rarityMultiplier).toLong().coerceAtLeast(1L)
 
-    // 货币 = 碎片 × 5
-    val credits = finalEndo * 5.0
+    // 货币 = 碎片 × multiplier
+    val credits = finalEndo * CREDITS_MULTIPLIER
 
     return SkillEnhanceCost(
         endo = finalEndo,
@@ -59,8 +66,12 @@ fun modCalculation(item: ItemStack): SkillEnhanceCost {
 /**
  * 技能书强化消耗计算（星愿点）
  */
-fun skillencCalculation(item: ItemStack): SkillBookCost {
-    val currentLevel = item.getDeepInt(RpgDefinitions.SkillBookNBT.LEVEL, 0)
+fun calculateSkillBookCost(item: ItemStack): SkillBookCost {
+    val MAX_LEVEL = 60
+    val BASE_STAR = 1
+
+    val currentLevelRaw = item.getDeepInt(RpgDefinitions.SkillBookNBT.LEVEL, 0)
+    val currentLevel = currentLevelRaw.coerceAtLeast(0).coerceAtMost(MAX_LEVEL)
 
     // 品质倍率（技能书强化更贵）
     val rarityMultiplier = when (item.getDeepString("品质", "普通")) {
@@ -72,8 +83,7 @@ fun skillencCalculation(item: ItemStack): SkillBookCost {
         else   -> 1.0
     }
 
-    val BASE_STAR = 1
-    val rawStar = BASE_STAR * 2.0.pow(currentLevel.toDouble())
+    val rawStar = BASE_STAR * (1 shl currentLevel)
     val finalStar = (rawStar * rarityMultiplier).toInt().coerceAtLeast(1)
 
     return SkillBookCost(
@@ -81,3 +91,4 @@ fun skillencCalculation(item: ItemStack): SkillBookCost {
         nextLevel = currentLevel + 1
     )
 }
+

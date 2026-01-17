@@ -1,5 +1,5 @@
 package com.skillview.expansion
-
+/**
 import org.bukkit.Bukkit
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
@@ -123,3 +123,4 @@ fun removePlayerAttribute(player: Player, source: String) {
     val attrData = AttributeAPI.getAttrData(player as LivingEntity)
     AttributeAPI.takeSourceAttribute(attrData, source)
 }
+ **/

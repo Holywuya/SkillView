@@ -1,0 +1,16 @@
+##调试模式
+DEBUG: true
+# 数据库配置
+Database:
+  # false = 使用本地 SQLite (data.db)
+  # true = 使用下方 MySQL 配置
+  enable: false
+
+  # MySQL 配置
+  host: localhost
+  port: 3306
+  user: root
+  password: ""
+  database: minecraft
+  # 表名
+  table: player_skills_kv
