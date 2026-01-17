@@ -12,5 +12,6 @@ Database:
   user: root
   password: ""
   database: minecraft
+
   # 表名
   table: player_skills_kv
