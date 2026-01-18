@@ -121,7 +121,7 @@ object SkillCaster {
             }
         } else {
             RpgRuntime.giveMana(player, finalBaseMana)
-            player.sendMessage("&c技能触发失败".colored())
+            player.sendMessage("&c技能触发失败，请联系管理员进行问题解决".colored())
         }
     }
 }
