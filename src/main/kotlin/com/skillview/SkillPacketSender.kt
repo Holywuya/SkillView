@@ -1,26 +1,26 @@
 package com.skillview
 
-import com.skillview.rpgCore.RpgRuntime
 import com.skillview.expansion.round1
-import com.skillview.rpgCore.SkillCaster.conf
+import com.skillview.rpgCore.RpgDefinitions
+import com.skillview.rpgCore.RpgRuntime
 import org.bukkit.entity.Player
+import org.bukkit.event.player.PlayerQuitEvent
+import priv.seventeen.artist.arcartx.core.ui.ArcartXUIRegistry
 import taboolib.common.LifeCycle
+import taboolib.common.function.debounce
 import taboolib.common.platform.Awake
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.onlinePlayers
 import taboolib.common.platform.function.submit
-import taboolib.common.function.debounce
-import priv.seventeen.artist.arcartx.core.ui.ArcartXUIRegistry
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import org.bukkit.event.player.PlayerQuitEvent
 
 object SkillPacketSender {
 
     const val UI_ID = "SkillHud"
     private const val AIR_ICON = "air"
 
-    private val DEBUG by lazy { conf.getBoolean("DEBUG") }
+    private val DEBUG = RpgDefinitions.Config.DEBUG
 
     // 缓存结构：仅存储 ID 和 图标路径
     private val playerCache = ConcurrentHashMap<UUID, Array<SkillCache?>>()
