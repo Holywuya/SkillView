@@ -19,87 +19,83 @@ object SkillPacketSender {
 
     const val UI_ID = "SkillHud"
     private const val AIR_ICON = "air"
-
     private val DEBUG = RpgDefinitions.Config.DEBUG
 
-    // 缓存结构：仅存储 ID 和 图标路径
-    private val playerCache = ConcurrentHashMap<UUID, Array<SkillCache?>>()
+    /* ===== 两条完全独立的缓存 ===== */
+    // CD 缓存：index 0~4 对应技能 1~5，-1 表示该槽无技能
+    private val cdCache   = ConcurrentHashMap<UUID, DoubleArray>()
+    // 图标缓存：index 0~4 对应技能 1~5，null 表示该槽无技能
+    private val iconCache = ConcurrentHashMap<UUID, Array<String?>>()
 
-    private data class SkillCache(
-        val id: String,
-        val icon: String
-    )
-
-    // 图标发包的防抖（防止菜单内频繁切换导致发包过频）
-    private val debouncedIconUpdate = debounce<Player>(500) { player ->
-        performIconUpdate(player)
-    }
-
-    /**
-     * 刷新缓存：仅在技能变动时调用
-     */
-    private fun refreshPlayerCache(player: Player) {
-        if (DEBUG) println("[Debug] 正在刷新 ${player.name} 的技能图标缓存...")
-        val cache = arrayOfNulls<SkillCache>(5)
+    /* ===== CD 刷新 ===== */
+    private fun refreshCdCache(player: Player) {
+        val arr = DoubleArray(5) { -1.0 }
+        val uuid = player.uniqueId
         for (i in 0..4) {
-            val skillId = SkillStorage.getSkillId(player, i)
-            if (skillId != null) {
-                val iconPath = "SkillTextures/${skillId.lowercase()}.png"
-                cache[i] = SkillCache(skillId, iconPath)
-            }
+            val id = SkillStorage.getSkillId(player, i) ?: continue
+            arr[i] = RpgRuntime.checkCooldown(player, id).coerceAtLeast(0.0)
         }
-        playerCache[player.uniqueId] = cache
+        cdCache[uuid] = arr
     }
 
+    /* ===== 图标刷新 ===== */
+    private fun refreshIconCache(player: Player) {
+        val arr = arrayOfNulls<String>(5)
+        val uuid = player.uniqueId
+        for (i in 0..4) {
+            val id = SkillStorage.getSkillId(player, i) ?: continue
+            arr[i] = "SkillTextures/${id.lowercase()}.png"
+        }
+        iconCache[uuid] = arr
+    }
+
+    /* ===== 高频任务：只发 CD ===== */
     @Awake(LifeCycle.ACTIVE)
     fun startUpdateTask() {
-        // 高频任务：只负责发 CD 包
         submit(period = 2L) {
-            onlinePlayers().forEach { proxyPlayer ->
-                sendCdPacket(proxyPlayer.cast())
+            onlinePlayers().forEach { p ->
+                refreshCdCache(p.cast())          // 每 2tick 刷新一次 CD 缓存
+                sendCdPacket(p.cast())              // 立即发包
             }
         }
     }
 
-    fun sendCdPacket(player: Player) {
-        val cacheArray = playerCache[player.uniqueId] ?: return
-        val data = HashMap<String, Any>()
-
+    private fun sendCdPacket(player: Player) {
+        val arr = cdCache[player.uniqueId] ?: return
+        val data = hashMapOf<String, Any>()
         for (i in 1..5) {
-            val skillData = cacheArray[i - 1]
-            val cdKey = "skill${i}_cd"
-
-            if (skillData != null) {
-                val currentLeftCD = RpgRuntime.checkCooldown(player, skillData.id)
-                data[cdKey] = if (currentLeftCD > 0) currentLeftCD.round1() else 0.0
-            } else {
-                data[cdKey] = 0.0
-            }
+            val v = arr[i - 1]
+            data["skill${i}_cd"] = if (v >= 0) v.round1() else 0.0
         }
         ArcartXUIRegistry.sendPacket(player, UI_ID, "update_skills_cd", data)
     }
 
+    /* ===== 图标发包：带防抖 ===== */
+    private val debouncedIconUpdate = debounce<Player>(500) { p ->
+        refreshIconCache(p)          // 真正刷新图标缓存
+        sendIconPacket(p)             // 立即发包
+    }
+
     fun sendSkillIdPacket(player: Player) {
-        refreshPlayerCache(player)
+        // 外部调用触发图标更新
         debouncedIconUpdate(player)
     }
 
-    private fun performIconUpdate(player: Player) {
-        val cacheArray = playerCache[player.uniqueId] ?: return
-        val data = HashMap<String, Any>()
-
+    private fun sendIconPacket(player: Player) {
+        val arr = iconCache[player.uniqueId] ?: return
+        val data = hashMapOf<String, Any>()
         for (i in 1..5) {
-            val skillData = cacheArray[i - 1]
-            val iconKey = "skill$i"
-            data[iconKey] = skillData?.icon ?: AIR_ICON
+            data["skill$i"] = arr[i - 1] ?: AIR_ICON
         }
-
         if (DEBUG) println("[Debug] 发送图标更新包: ${player.name} -> $data")
         ArcartXUIRegistry.sendPacket(player, UI_ID, "update_skills_icon", data)
     }
 
+    /* ===== 退出清理 ===== */
     @SubscribeEvent
     fun onQuit(e: PlayerQuitEvent) {
-        playerCache.remove(e.player.uniqueId)
+        val uuid = e.player.uniqueId
+        cdCache.remove(uuid)
+        iconCache.remove(uuid)
     }
 }
