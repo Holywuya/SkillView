@@ -18,7 +18,7 @@ data class SkillBookCost(
 )
 
 /**
- * Mod（强化石）强化消耗计算
+ * Mod强化消耗计算
  * 前期低成本，后期指数爆炸 + 品质倍率影响
  */
 fun modCalculation(item: ItemStack): SkillEnhanceCost {
