@@ -209,11 +209,9 @@ object SkillUpgradeMenu {
                     }
                 }
 
-                // --- 关闭界面逻辑：安全退还物品 ---
-                // NOTE: onClose 处理已在菜单外统一注册，点击内不应重复注册。
             }
 
-            // 确保关闭时安全返还插槽内的物品（在菜单构建周期中只注册一次）
+            // 5. 关闭时归还物品
             onClose { event ->
                 event.returnItems(getSlots('S'))
             }

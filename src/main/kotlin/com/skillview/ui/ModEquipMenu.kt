@@ -1,10 +1,9 @@
 package com.skillview.ui
 
-import com.skillview.core.mod.ModRuntime
 import com.skillview.core.mod.ModRuntime.recalculate
 import com.skillview.data.RpgDefinitions
 import com.skillview.data.SkillStorage
-import com.skillview.util.getModCost
+import com.skillview.util.getDeepString
 import com.skillview.util.hasTagValue
 import org.bukkit.entity.Player
 import taboolib.library.xseries.XMaterial
@@ -27,71 +26,87 @@ object ModEquipMenu {
                 "P#######U"
             )
 
-            val modSlot = getSlots('M')
+            val modSlots = getSlots('M')
             val filler = buildItem(XMaterial.GRAY_STAINED_GLASS_PANE) { name = " " }
+
             set('#', filler) { isCancelled = true }
-            set('P', buildItem(XMaterial.BARRIER) {
-                name = " "
-            }) { isCancelled = true }
-            set('U', buildItem(XMaterial.BARRIER) {
-                name = " "
-            }) { isCancelled = true }
+            set('P', buildItem(XMaterial.BARRIER) { name = "&e属性面板".colored() }) { isCancelled = true }
+            set('U', buildItem(XMaterial.ANVIL) { name = "&6确认强化".colored() }) { isCancelled = true }
 
-
-            onClick('U') { }
             onClick { event ->
+                // 点击玩家背包直接放行
                 if (event.rawSlot >= event.inventory.size) {
                     event.isCancelled = false
                     return@onClick
                 }
 
-                modSlot.forEach { targetSlot ->
+                modSlots.forEach { targetSlot ->
                     event.conditionSlot(
                         targetSlot,
-                        condition = { put, out ->
-                            if (put != null && !put.isAir()) put.hasTagValue(RpgDefinitions.ModNBT.TYPE, "角色Mod") else true
+                        condition = { put, _ ->
+                            // 1. 如果是取回物品（put为空气），允许操作
+                            if (put == null || put.isAir()) return@conditionSlot true
+
+                            // 2. 基础类型校验
+                            if (!put.hasTagValue(RpgDefinitions.ModNBT.TYPE, "角色Mod")) {
+                                return@conditionSlot false
+                            }
+
+                            // 获取正要放入的 MOD ID
+                            val incomingId = put.getDeepString(RpgDefinitions.ModNBT.MOD_ID)
+
+                            // 检查其他槽位是否已经有了相同 ID 的 MOD
+                            val isDuplicate = modSlots.any { otherSlot ->
+                                // 跳过当前正在操作的格子
+                                if (otherSlot == targetSlot) return@any false
+
+                                val itemInOtherSlot = event.inventory.getItem(otherSlot)
+                                if (itemInOtherSlot == null || itemInOtherSlot.isAir()) return@any false
+
+                                // 比较 ID 是否相同
+                                itemInOtherSlot.getDeepString(RpgDefinitions.ModNBT.MOD_ID) == incomingId
+                            }
+
+                            if (isDuplicate) {
+                                event.clicker.sendMessage("&c你已经装备了一个相同的Mod了！".colored())
+                                return@conditionSlot false
+                            }
+
+                            true
                         },
                         failedCallback = {
-                            event.clicker.sendMessage("&c这里只能放入有效的角色Mod！".colored())
+                            event.clicker.sendMessage("&c只能放入角色Mod！且不可重复！".colored())
                         }
                     )
                 }
             }
 
             onBuild { _, inventory ->
-                // 1. 获取玩家数据对象
                 val loadout = SkillStorage.getModLoadout(player)
-                val stats = ModRuntime.getStats(player)
 
-                // 2. 计算容量限制 (基础30/扩容60)
-                val maxCapacity = if (loadout.isCapacityUpgraded) 60 else 30
-                var currentUsed = 0
-
-                // 3. 渲染 0-7 号 MOD 插槽
-                modSlot.forEachIndexed { index, slot ->
-                    val modItem = loadout.mods[index] // 从 Map 中按索引取
-
+                // 渲染已保存的 MOD
+                modSlots.forEachIndexed { index, slot ->
+                    val modItem = loadout.mods[index]
                     if (modItem != null && !modItem.isAir()) {
-                        // 累加已用容量
-                        currentUsed += modItem.getModCost()
                         inventory.setItem(slot, modItem)
                     }
-
                 }
-                onClose { event ->
-                    // 创建一个新的配装方案对象
-                    val newLoadout = SkillStorage.ModLoadout()
-                    modSlot.forEachIndexed { index, i ->
-                        val item = event.inventory.getItem(i)
+            }
 
-                        if (item != null && !item.isAir() && item.hasTagValue(RpgDefinitions.ModNBT.TYPE, "角色Mod")) {
-                            newLoadout.mods[index] = item
-                        }
+            onClose { event ->
+                val newLoadout = SkillStorage.ModLoadout()
+                val inventory = event.inventory
+
+                modSlots.forEachIndexed { index, slotId ->
+                    val item = inventory.getItem(slotId)
+                    if (item != null && !item.isAir() && item.hasTagValue(RpgDefinitions.ModNBT.TYPE, "角色Mod")) {
+                        newLoadout.mods[index] = item
                     }
-                    SkillStorage.saveModLoadout(player, newLoadout)
-                    recalculate(player)
-                    player.sendMessage("&aMod栏已同步到云端数据库！".colored())
                 }
+
+                SkillStorage.saveModLoadout(player, newLoadout)
+                recalculate(player)
+                player.sendMessage("&aMod已保存".colored())
             }
         }
     }
