@@ -40,13 +40,13 @@ object SkillUpgradeMenu {
             // 1. 装饰背景
             set('#', buildItem(XMaterial.GRAY_STAINED_GLASS_PANE) { name = " " }) { isCancelled = true }
 
-            // 2. 核心槽位 (Slot 13)
+            // 2. 核心槽位 (Slot 12)
             set('S', ItemStack(Material.AIR)) { isCancelled = false }
 
-            // 3. 需求展示槽位 (Slot 15)
+            // 3. 需求展示槽位 (Slot 14)
             set('I', buildItem(XMaterial.BARRIER) { name = "&c请放入物品".colored() }) { isCancelled = true }
 
-            // 4. 确认按钮 (Slot 17)
+            // 4. 确认按钮
             set('U', buildItem(XMaterial.ANVIL) {
                 name = "&a&l确认处理".colored()
                 lore.add("&7请放入技能书或强化石".colored())
@@ -59,15 +59,16 @@ object SkillUpgradeMenu {
                         this.cancel()
                         return@submit
                     }
-
-                    val item = inventory.getItem(13)
-                    val infoSlot = 15
-                    val type = item?.getDeepString("类型") ?: "未知"
+                    val item = inventory.getItem(getFirstSlot('S'))
+                    val infoSlot = getFirstSlot('I')
+                    // 安全读取类型：空物品或无 NBT 时设为 "未知"
+                    val type = if (item == null || item.isAir()) "未知" else item.getDeepString(RpgDefinitions.ModNBT.TYPE, "未知")
 
                     when {
                         type.contains("Mod", ignoreCase = true) -> {
                             val cost = modCalculation(item!!)
-                            val currentLv = item.getDeepInt(RpgDefinitions.SkillBookNBT.LEVEL, 1)
+                            // 修正为读取 Mod 的等级路径
+                            val currentLv = item.getDeepInt(RpgDefinitions.ModNBT.LEVEL, 1)
                             inventory.setItem(infoSlot, buildItem(XMaterial.EMERALD) {
                                 name = "§eMod升级 §7(Lv.$currentLv -> §aLv.${cost.nextLevel}§7)".colored()
                                 lore.add("")
@@ -103,9 +104,8 @@ object SkillUpgradeMenu {
             }
 
             // --- 升级执行逻辑 ---
-            onClick('U') {
-                val topInv = player.openInventory.topInventory
-                val item = topInv.getItem(13)
+            onClick('U') {event ->
+                val item = event.getItem('S')
 
                 if (item == null || item.isAir()) {
                     player.sendMessage("§c[系统] 槽位是空的！".colored())
@@ -212,9 +212,12 @@ object SkillUpgradeMenu {
                 }
 
                 // --- 关闭界面逻辑：安全退还物品 ---
-                onClose { event ->
-                    event.returnItems(listOf(13))
-                }
+                // NOTE: onClose 处理已在菜单外统一注册，点击内不应重复注册。
+            }
+
+            // 确保关闭时安全返还插槽内的物品（在菜单构建周期中只注册一次）
+            onClose { event ->
+                event.returnItems(listOf(13))
             }
         }
 
