@@ -16,8 +16,7 @@ object RpgConfig {
     @Config("mods.yml")
     lateinit var modConf: Configuration
 
-    @Config("config.yml")
-    lateinit var con: Configuration
+
 
     // 缓存容器
     private val skills = ConcurrentHashMap<String, SkillSetting>()

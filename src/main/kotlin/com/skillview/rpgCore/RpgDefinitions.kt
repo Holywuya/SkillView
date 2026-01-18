@@ -1,11 +1,20 @@
 package com.skillview.rpgCore
 
+import taboolib.module.configuration.Configuration
+
 /**
  * RPG 系统常量与定义
  * 集中管理 NBT 键名、属性列表、路径常量
  * 所有魔法值均在此处定义，避免散落
  */
 object RpgDefinitions {
+
+    @taboolib.module.configuration.Config("config.yml")
+    lateinit var con: Configuration
+
+    object Config {
+        val DEBUG by lazy { con.getBoolean("DEBUG") }
+    }
 
     // ==========================================
     //          NBT 路径常量（分层管理）

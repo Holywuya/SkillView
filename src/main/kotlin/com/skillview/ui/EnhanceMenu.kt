@@ -2,8 +2,8 @@ package com.skillview.ui
 
 import com.skillview.SkillStorage.getStarPoints
 import com.skillview.SkillStorage.takeStarPoints
-import com.skillview.enhanceCore.modCalculation
 import com.skillview.enhanceCore.calculateSkillBookCost
+import com.skillview.enhanceCore.modCalculation
 import com.skillview.expansion.*
 import com.skillview.rpgCore.RpgConfig
 import com.skillview.rpgCore.RpgDefinitions
@@ -14,8 +14,6 @@ import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.submit
 import taboolib.library.xseries.XMaterial
 import taboolib.module.chat.colored
-import taboolib.module.configuration.Config
-import taboolib.module.configuration.Configuration
 import taboolib.module.nms.getItemTag
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.returnItems
@@ -26,9 +24,6 @@ import taboolib.platform.util.buildItem
 import taboolib.platform.util.isAir
 
 object SkillUpgradeMenu {
-
-    @Config("skills.yml")
-    lateinit var conf: Configuration
 
     /**
      * 打开技能强化/升级界面

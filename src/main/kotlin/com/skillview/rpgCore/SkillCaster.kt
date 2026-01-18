@@ -8,18 +8,14 @@ import ink.ptms.um.Mythic
 import org.bukkit.entity.Player
 import taboolib.common.function.throttle
 import taboolib.module.chat.colored
-import taboolib.module.configuration.Config
-import taboolib.module.configuration.Configuration
 
 object SkillCaster {
 
     private const val ROOT_BASIC = RpgDefinitions.SkillBookNBT.ROOT_BASIC
     private const val ROOT_MODIFIER = RpgDefinitions.SkillBookNBT.ROOT_MODIFIER
 
-    @Config("config.yml")
-    lateinit var conf: Configuration
 
-    private val DEBUG by lazy { conf.getBoolean("DEBUG") }
+    val DEBUG = RpgDefinitions.Config.DEBUG
 
     private val castThrottle = throttle<Player, String>(200) { player, slotIndexStr ->
         executeInternalCast(player, slotIndexStr)

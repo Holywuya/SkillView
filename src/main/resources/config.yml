@@ -1,5 +1,5 @@
 ##调试模式
-DEBUG: true
+DEBUG: false
 # 数据库配置
 Database:
   # false = 使用本地 SQLite (data.db)

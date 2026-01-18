@@ -1,13 +1,12 @@
 package com.skillview
 
+import ink.ptms.um.Mythic
 import org.bukkit.Bukkit
 import taboolib.common.platform.Plugin
-import taboolib.common.platform.function.disablePlugin
 import taboolib.common.platform.function.info
 import taboolib.common.platform.function.warning
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.ConfigFile
-import ink.ptms.um.Mythic
 import taboolib.platform.compat.isEconomySupported
 import taboolib.platform.compat.isPermissionSupported
 import top.maplex.arim.Arim
