@@ -1,7 +1,7 @@
 # SkillView
-
-## 构建发行版本
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Holywuya/SkillView)
+## 构建发行版本
+
 发行版本用于正常使用, 不含 TabooLib 本体。
 
 ```
