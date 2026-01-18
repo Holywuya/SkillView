@@ -1,7 +1,6 @@
 package com.skillview.listener
 
-import com.skillview.SkillStorage
-import org.bukkit.Sound
+import com.skillview.data.SkillStorage
 import org.bukkit.event.player.PlayerLevelChangeEvent
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.module.chat.colored

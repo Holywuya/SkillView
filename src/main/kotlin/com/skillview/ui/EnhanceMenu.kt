@@ -1,12 +1,10 @@
 package com.skillview.ui
 
-import com.skillview.SkillStorage.getStarPoints
-import com.skillview.SkillStorage.takeStarPoints
-import com.skillview.enhanceCore.calculateSkillBookCost
-import com.skillview.enhanceCore.modCalculation
-import com.skillview.expansion.*
-import com.skillview.rpgCore.RpgConfig
-import com.skillview.rpgCore.RpgDefinitions
+import com.skillview.config.RpgConfig
+import com.skillview.data.RpgDefinitions
+import com.skillview.data.SkillStorage.getStarPoints
+import com.skillview.data.SkillStorage.takeStarPoints
+import com.skillview.util.*
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.entity.Player
@@ -217,7 +215,7 @@ object SkillUpgradeMenu {
 
             // 确保关闭时安全返还插槽内的物品（在菜单构建周期中只注册一次）
             onClose { event ->
-                event.returnItems(listOf(13))
+                event.returnItems(getSlots('S'))
             }
         }
 

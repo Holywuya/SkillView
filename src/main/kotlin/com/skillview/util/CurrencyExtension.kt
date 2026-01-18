@@ -1,9 +1,22 @@
-package com.skillview.expansion
+package com.skillview.util
 
 import org.bukkit.entity.Player
 import su.nightexpress.coinsengine.api.CoinsEngineAPI
 
+/**
+ * 增加玩家指定货币的余额
+ * @param amount 目标金额 (会自动拦截负数，强制最小为 0.0)
+ */
+fun addBalance(player: Player, currencyId: String, amount: Double) {
+    // 1. 获取货币对象
+    val currency = CoinsEngineAPI.getCurrency(currencyId) ?: return
 
+    // 2. 数值安全检查：确保不会将余额设为负数
+    val safeAmount = amount.coerceAtLeast(0.0)
+
+    // 3. 执行设置操作
+    CoinsEngineAPI.addBalance(player, currency, safeAmount)
+}
 /**
  * 设置玩家指定货币的余额
  * @param amount 目标金额 (会自动拦截负数，强制最小为 0.0)

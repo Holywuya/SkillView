@@ -1,4 +1,4 @@
-package com.skillview.rpgCore
+package com.skillview.data
 
 import taboolib.module.configuration.Configuration
 

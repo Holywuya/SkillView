@@ -1,11 +1,11 @@
 package com.skillview.ui
 
-import com.skillview.SkillStorage
-import com.skillview.expansion.getModCost
-import com.skillview.expansion.hasTagValue
-import com.skillview.modCore.ModRuntime
-import com.skillview.modCore.ModRuntime.recalculate
-import com.skillview.rpgCore.RpgDefinitions
+import com.skillview.core.mod.ModRuntime
+import com.skillview.core.mod.ModRuntime.recalculate
+import com.skillview.data.RpgDefinitions
+import com.skillview.data.SkillStorage
+import com.skillview.util.getModCost
+import com.skillview.util.hasTagValue
 import org.bukkit.entity.Player
 import taboolib.library.xseries.XMaterial
 import taboolib.module.chat.colored

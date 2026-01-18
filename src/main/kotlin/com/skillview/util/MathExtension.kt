@@ -1,4 +1,4 @@
-package com.skillview.expansion
+package com.skillview.util
 
 import java.math.BigDecimal
 import java.math.RoundingMode

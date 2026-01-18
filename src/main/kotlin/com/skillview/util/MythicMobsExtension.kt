@@ -1,10 +1,10 @@
-package com.skillview.expansion
+package com.skillview.util
 
-import io.lumine.mythic.bukkit.MythicBukkit
 import io.lumine.mythic.bukkit.BukkitAdapter
-import io.lumine.mythic.core.skills.variables.VariableType
+import io.lumine.mythic.bukkit.MythicBukkit
 import io.lumine.mythic.core.skills.variables.Variable
 import io.lumine.mythic.core.skills.variables.VariableScope
+import io.lumine.mythic.core.skills.variables.VariableType
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerQuitEvent
 import taboolib.common.platform.event.SubscribeEvent

@@ -1,10 +1,10 @@
-package com.skillview.modCore
+package com.skillview.core.mod
 
-import com.skillview.SkillStorage
-import com.skillview.expansion.getDeepDouble
-import com.skillview.expansion.getDeepString
-import com.skillview.expansion.hasCustomTag
-import com.skillview.rpgCore.RpgDefinitions
+import com.skillview.data.RpgDefinitions
+import com.skillview.data.SkillStorage
+import com.skillview.util.getDeepDouble
+import com.skillview.util.getDeepString
+import com.skillview.util.hasCustomTag
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent

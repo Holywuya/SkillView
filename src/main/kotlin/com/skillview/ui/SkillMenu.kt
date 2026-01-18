@@ -1,8 +1,8 @@
 package com.skillview.ui
 
-import com.skillview.SkillPacketSender
-import com.skillview.SkillStorage
-import com.skillview.expansion.hasCustomTag
+import com.skillview.data.SkillStorage
+import com.skillview.util.SkillPacketSender
+import com.skillview.util.hasCustomTag
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack

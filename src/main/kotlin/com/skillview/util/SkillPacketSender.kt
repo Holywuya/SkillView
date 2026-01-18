@@ -1,8 +1,8 @@
-package com.skillview
+package com.skillview.util
 
-import com.skillview.expansion.round1
-import com.skillview.rpgCore.RpgDefinitions
-import com.skillview.rpgCore.RpgRuntime
+import com.skillview.core.rpg.RpgRuntime
+import com.skillview.data.RpgDefinitions
+import com.skillview.data.SkillStorage
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerQuitEvent
 import priv.seventeen.artist.arcartx.core.ui.ArcartXUIRegistry

@@ -1,14 +1,12 @@
-package com.skillview
+package com.skillview.data
 
-import com.skillview.expansion.getDeepString
-import com.skillview.expansion.hasCustomTag
+import com.skillview.util.getDeepString
+import com.skillview.util.hasCustomTag
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.expansion.getDataContainer
-import taboolib.module.nms.getItemTag
 import taboolib.platform.util.isAir
 import top.maplex.arim.tools.gson.GsonUtils
-import java.util.concurrent.ConcurrentHashMap
 
 object SkillStorage {
 

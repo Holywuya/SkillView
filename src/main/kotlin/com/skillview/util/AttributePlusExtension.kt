@@ -1,4 +1,4 @@
-package com.skillview.expansion
+package com.skillview.util
 /**
 import org.bukkit.Bukkit
 import org.bukkit.entity.LivingEntity

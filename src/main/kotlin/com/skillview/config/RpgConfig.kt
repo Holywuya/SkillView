@@ -1,12 +1,12 @@
-package com.skillview.rpgCore
+package com.skillview.config
 
+import com.skillview.data.ModSetting
+import com.skillview.data.SkillSetting
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import java.util.concurrent.ConcurrentHashMap
-
-
 
 object RpgConfig {
 

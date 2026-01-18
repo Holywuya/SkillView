@@ -1,4 +1,4 @@
-package com.skillview.expansion
+package com.skillview.util
 
 import org.bukkit.inventory.ItemStack
 import taboolib.module.nms.ItemTag

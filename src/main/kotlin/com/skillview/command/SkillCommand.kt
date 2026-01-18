@@ -1,16 +1,16 @@
-package com.skillview
+package com.skillview.command
 
-import com.skillview.rpgCore.RpgConfig
-import com.skillview.rpgCore.SkillCaster
+import com.skillview.config.RpgConfig
+import com.skillview.core.skill.SkillCaster
+import com.skillview.data.SkillStorage
 import com.skillview.ui.ModEquipMenu
-import com.skillview.ui.SkillUpgradeMenu
 import com.skillview.ui.SkillMenu
+import com.skillview.ui.SkillUpgradeMenu
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import taboolib.common.platform.command.*
 import taboolib.module.chat.colored
 import top.maplex.arim.Arim
-import org.bukkit.command.CommandSender
-import priv.seventeen.artist.arcartx.core.entity.data.ArcartXPlayer
 
 @CommandHeader(
     name = "skill",
@@ -21,11 +21,6 @@ import priv.seventeen.artist.arcartx.core.entity.data.ArcartXPlayer
 object SkillCommand {
 
     // --- 基础菜单指令 ---
-
-    @CommandBody
-    val main = mainCommand {
-        execute<Player> { sender, _, _ -> SkillMenu.openSkillEquipMenu(sender) }
-    }
 
     @CommandBody
     val open = subCommand {
@@ -74,7 +69,7 @@ object SkillCommand {
         literal("points") {
             player("target") {
                 int("amount") {
-                    execute<org.bukkit.command.CommandSender> { sender, context, _ ->
+                    execute<CommandSender> { sender, context, _ ->
                         val target = context.player("target").cast<Player>()
                         val amount = context.int("amount")
                         val isSilent = context.hasOption("silent")
@@ -93,8 +88,8 @@ object SkillCommand {
         literal("book") {
             player("target") {
                 dynamic("skillId") {
-                    suggestion<org.bukkit.command.CommandSender> { _, _ -> RpgConfig.getAllSkillIds() }
-                    execute<org.bukkit.command.CommandSender> { sender, context, _ ->
+                    suggestion<CommandSender> { _, _ -> RpgConfig.getAllSkillIds() }
+                    execute<CommandSender> { sender, context, _ ->
                         val target = context.player("target").cast<Player>()
                         val skillId = context["skillId"]
 
@@ -120,4 +115,3 @@ object SkillCommand {
         player.inventory.addItem(item.itemStack)
     }
 }
-

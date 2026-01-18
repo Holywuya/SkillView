@@ -1,4 +1,4 @@
-package com.skillview
+package com.skillview.config
 
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent

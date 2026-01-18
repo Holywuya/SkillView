@@ -1,7 +1,8 @@
-package com.skillview.rpgCore
+package com.skillview.core.rpg
 
-import com.skillview.SkillPacketSender
-import com.skillview.modCore.ModRuntime
+import com.skillview.core.mod.ModRuntime
+import com.skillview.util.SkillPacketSender
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
@@ -9,7 +10,7 @@ import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.submit
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 object RpgRuntime {
@@ -22,7 +23,7 @@ object RpgRuntime {
     @Awake(LifeCycle.ACTIVE)
     private fun startManaRegenTask() {
         submit(period = 20L) {  // 每 20 tick = 1 秒
-            org.bukkit.Bukkit.getOnlinePlayers().forEach { player ->
+            Bukkit.getOnlinePlayers().forEach { player ->
                 regenMana(player)
             }
         }
@@ -59,7 +60,7 @@ object RpgRuntime {
         cooldowns[uuid] = ConcurrentHashMap()
 
         submit(delay = 100L) {
-            val player = org.bukkit.Bukkit.getPlayer(uuid) ?: return@submit
+            val player = Bukkit.getPlayer(uuid) ?: return@submit
             if (player.isOnline) {
                 val maxMana = getMaxMana(player)
                 manaMap[uuid] = maxMana

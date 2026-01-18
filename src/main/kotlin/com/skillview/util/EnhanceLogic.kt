@@ -1,8 +1,6 @@
-package com.skillview.enhanceCore
+package com.skillview.util
 
-import com.skillview.expansion.getDeepInt
-import com.skillview.expansion.getDeepString
-import com.skillview.rpgCore.RpgDefinitions
+import com.skillview.data.RpgDefinitions
 import org.bukkit.inventory.ItemStack
 
 /**

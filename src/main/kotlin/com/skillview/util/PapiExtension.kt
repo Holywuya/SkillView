@@ -1,6 +1,6 @@
-package com.skillview.expansion
+package com.skillview.util
 
-import com.skillview.SkillStorage
+import com.skillview.data.SkillStorage
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import taboolib.platform.compat.PlaceholderExpansion

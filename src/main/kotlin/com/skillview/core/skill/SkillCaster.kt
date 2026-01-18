@@ -1,9 +1,11 @@
-package com.skillview.rpgCore
+package com.skillview.core.skill
 
-import com.skillview.SkillStorage
-import com.skillview.SkillStorage.getSkillItem
-import com.skillview.expansion.*
-import com.skillview.modCore.ModRuntime
+import com.skillview.config.RpgConfig
+import com.skillview.core.mod.ModRuntime
+import com.skillview.core.rpg.RpgRuntime
+import com.skillview.data.RpgDefinitions
+import com.skillview.data.SkillStorage
+import com.skillview.util.*
 import ink.ptms.um.Mythic
 import org.bukkit.entity.Player
 import taboolib.common.function.throttle
@@ -47,7 +49,7 @@ object SkillCaster {
         val setting = RpgConfig.getSkill(skillId) ?: return
 
         /* --- 4. 蓝量与效率预检 --- */
-        val item = getSkillItem(player, slotIndex)
+        val item = SkillStorage.getSkillItem(player, slotIndex)
 
 
         val totalEfficiency = modStats.efficiency
@@ -85,10 +87,10 @@ object SkillCaster {
         val realSkillPower            = (modSkillPower + nbtSkillPower).toMultiplier()
         // 同步变量到 MythicMobs
         setSkillData(player, "${skillId}_BaseMultiplier", realBaseMultiplierPercent)
-        setSkillData(player, "${skillId}_dmgmore",        realDmgMoreMultiplier)
-        setSkillData(player, "${skillId}_range",          realExtraRangeMultiplier)
-        setSkillData(player, "${skillId}_dmgbonus",       realDmgBonusMultiplier)
-        setSkillData(player, "${skillId}_skillpower",     realSkillPower )
+        setSkillData(player, "${skillId}_dmgmore", realDmgMoreMultiplier)
+        setSkillData(player, "${skillId}_range", realExtraRangeMultiplier)
+        setSkillData(player, "${skillId}_dmgbonus", realDmgBonusMultiplier)
+        setSkillData(player, "${skillId}_skillpower", realSkillPower)
         if (DEBUG) {
             println("""
                 [Debug] --- 属性同步详情 ($skillId) ---
@@ -102,7 +104,7 @@ object SkillCaster {
         }
 
         /* --- 6. 释放技能 --- */
-        val success = Mythic.API.castSkill(caster = player, skillName = setting.mmSkill)
+        val success = Mythic.Companion.API.castSkill(caster = player, skillName = setting.mmSkill)
 
         if (success) {
             // 计算最终 CD 缩减 (MOD总和 + 技能书NBT)
