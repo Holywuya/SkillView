@@ -1,6 +1,6 @@
-package com.skillview.ui
+package com.skillview.ui.mod
 
-import com.skillview.core.mod.ModRuntime.recalculate
+import com.skillview.core.mod.PlayerModLogic
 import com.skillview.data.RpgDefinitions
 import com.skillview.data.SkillStorage
 import com.skillview.util.getDeepString
@@ -14,10 +14,10 @@ import taboolib.module.ui.type.Chest
 import taboolib.platform.util.buildItem
 import taboolib.platform.util.isAir
 
-object ModEquipMenu {
+object PlayerMod {
 
-    fun openModEquipMenu(player: Player) {
-        player.openMenu<Chest>("&8MOD配装系统".colored()) {
+    fun openPlayerMod(player: Player) {
+        player.openMenu<Chest>("&8角色MOD配装系统".colored()) {
             rows(4)
             map(
                 "#########",
@@ -75,7 +75,6 @@ object ModEquipMenu {
                             true
                         },
                         failedCallback = {
-                            event.clicker.sendMessage("&c只能放入角色Mod！且不可重复！".colored())
                         }
                     )
                 }
@@ -105,7 +104,7 @@ object ModEquipMenu {
                 }
 
                 SkillStorage.saveModLoadout(player, newLoadout)
-                recalculate(player)
+                PlayerModLogic.recalculate(player)
                 player.sendMessage("&aMod已保存".colored())
             }
         }

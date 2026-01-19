@@ -15,7 +15,7 @@ object SkillStorage {
     // ==========================================
 
     /**
-     * 玩家的 MOD 配置方案 (Warframe 风格)
+     * 玩家的 MOD 配置方案
      */
     data class ModLoadout(
         var isCapacityUpgraded: Boolean = false, // 反应堆扩容状态

@@ -33,7 +33,7 @@ object SkillView : Plugin() {
         if (Bukkit.getPluginManager().getPlugin("AttributePlus") != null) {
             info("AttributePlus 扩展已注册！")
         } else {
-            error("未检测到 AttributePlus，功能不可用。")
+            warning("未检测到 AttributePlus，功能不可用。")
         }
 
         if (Mythic.isLoaded()) {

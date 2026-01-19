@@ -28,7 +28,8 @@ object RpgDefinitions {
         const val RARITY = "品质"
         const val ROOT_BASIC = "技能书基础属性"               // 技能书基础节点
         const val ROOT_MODIFIER = "技能书属性强化"            // 强化/升级后属性节点（Mod属性叠加）
-        const val ROOT_MOD = "Mod属性"                       // 全局Mod属性根节点（与角色Mod共享）
+        const val ROOT_MOD = "Mod属性" // 全局Mod属性根节点（与角色Mod共享）
+        const val MOD_SLOTS = "Mod系统"                  // 镶嵌Mod
 
         const val SKILL_ID = "$ROOT_BASIC.技能id"            // 技能ID（如 "fireball"）
         const val LEVEL = "$ROOT_BASIC.等级"                 // 当前等级（升级时写入）

@@ -3,9 +3,10 @@ package com.skillview.command
 import com.skillview.config.RpgConfig
 import com.skillview.core.skill.SkillCaster
 import com.skillview.data.SkillStorage
-import com.skillview.ui.ModEquipMenu
 import com.skillview.ui.SkillMenu
 import com.skillview.ui.SkillUpgradeMenu
+import com.skillview.ui.mod.PlayerMod
+import com.skillview.ui.mod.SkillMod
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import taboolib.common.platform.command.*
@@ -24,17 +25,29 @@ object SkillCommand {
 
     @CommandBody
     val open = subCommand {
-        execute<Player> { sender, _, _ -> SkillMenu.openSkillEquipMenu(sender) }
-    }
+        // 定义动态参数：菜单类型
+        dynamic("menu") {
+            // 提供 Tab 补全建议
+            suggestion<Player> { _, _ ->
+                listOf("equip", "upgrade", "player","skill")
+            }
 
-    @CommandBody
-    val enhance = subCommand {
-        execute<Player> { sender, _, _ -> SkillUpgradeMenu.openUpgradeMenu(sender) }
-    }
+            execute<Player> { sender, context, _ ->
+                // 获取参数并转换为小写，进行模糊匹配或精确匹配
+                when (context["menu"].lowercase()) {
+                    "equip", "skills" -> SkillMenu.openSkillEquipMenu(sender)
+                    "upgrade", "enhance" -> SkillUpgradeMenu.openUpgradeMenu(sender)
+                    "player" -> PlayerMod.openPlayerMod(sender)
+                    "skill" -> SkillMod.openSkillMod(sender)
+                    else -> sender.sendMessage("§c[系统] 未知的菜单类型! 可选: equip, upgrade, mod".colored())
+                }
+            }
+        }
 
-    @CommandBody
-    val mod = subCommand {
-        execute<Player> { sender, _, _ -> ModEquipMenu.openModEquipMenu(sender) }
+        // 可选：如果玩家只输入 /skill open 不带任何参数，默认执行的逻辑
+        execute<Player> { sender, _, _ ->
+            SkillMenu.openSkillEquipMenu(sender)
+        }
     }
 
     // --- 战斗指令 ---

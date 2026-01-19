@@ -1,7 +1,8 @@
 package com.skillview.core.skill
 
 import com.skillview.config.RpgConfig
-import com.skillview.core.mod.ModRuntime
+import com.skillview.core.mod.PlayerModLogic
+import com.skillview.core.mod.SkillModLogic
 import com.skillview.core.rpg.RpgRuntime
 import com.skillview.data.RpgDefinitions
 import com.skillview.data.SkillStorage
@@ -29,7 +30,8 @@ object SkillCaster {
     }
 
     private fun executeInternalCast(player: Player, slotIndexStr: String) {
-        val modStats = ModRuntime.getStats(player)
+        val playerGlobalStats = PlayerModLogic.getStats(player)
+
         if (DEBUG) println("[Debug] >>> 释放流程启动 | 玩家: ${player.name}")
 
         /* --- 1. 基础验证 --- */
@@ -46,14 +48,21 @@ object SkillCaster {
         }
 
         /* --- 3. 准备基础配置 --- */
+
         val setting = RpgConfig.getSkill(skillId) ?: return
 
         /* --- 4. 蓝量与效率预检 --- */
+
+        if (DEBUG) println("[Debug] [计算] 正在读取蓝量消耗与效率...")
+        //获取对应技能栏的技能书
         val item = SkillStorage.getSkillItem(player, slotIndex)
+        //获取此技能书的MOD属性
+        val bookModStats  = SkillModLogic.getSkillBookModStats(item)
 
+        val totalEfficiency = playerGlobalStats.efficiency + bookModStats.efficiency
 
-        val totalEfficiency = modStats.efficiency
         val nbtManaReduction = item?.getDeepInt("$ROOT_MODIFIER.魔力减耗", 0) ?: 0
+
         val finalBaseMana = (setting.mana - nbtManaReduction).coerceAtLeast(0)
 
         if (!RpgRuntime.takeMana(player, finalBaseMana, totalEfficiency)) {
@@ -65,13 +74,20 @@ object SkillCaster {
         /* --- 5. 核心同步（重负载计算） --- */
         if (DEBUG) println("[Debug] [计算] 正在读取 AP(含MOD) 与 技能书NBT 属性...")
 
-        // A. 读取 AP 总属性 (玩家基础 + MOD加成)
-        val modDmgMore    = modStats.damageMore
-        val modDmgBonus   = modStats.damageBonus
-        val modExtraRange = modStats.extraRange
-        val modSkillPower = modStats.skillPower
 
-        // B. 读取 技能书 NBT (仅该书持有的局部加成)
+        //  读取 玩家MOD 总属性 (全局加成)
+        val modPlayerDmgMore    = playerGlobalStats.damageMore
+        val modPlayerBonus   = playerGlobalStats.damageBonus
+        val modPlayerExtraRange = playerGlobalStats.extraRange
+        val modPlayerSkillPower = playerGlobalStats.skillPower
+
+        //  读取 技能书 MOD 属性 (局部加成)
+        val modBookDmgMore    = bookModStats.damageMore
+        val modBookDmgBonus   = bookModStats.damageBonus
+        val modBookExtraRange = bookModStats.extraRange
+        val modBookSkillPower = bookModStats.skillPower
+
+        //  读取 技能书 NBT (局部加成)
         val nbtDmgMore   = item?.getDeepDouble("$ROOT_MODIFIER.最终伤害", 0.0) ?: 0.0
         val nbtDmgBonus  = item?.getDeepDouble("$ROOT_MODIFIER.伤害加成", 0.0) ?: 0.0
         val nbtRangeRaw  = item?.getDeepDouble("$ROOT_MODIFIER.额外范围", 0.0) ?: 0.0
@@ -79,43 +95,47 @@ object SkillCaster {
         val nbtMultiplier= item?.getDeepDouble("$ROOT_MODIFIER.技能倍率",0.0) ?:0.0
         val nbtLevel     = item?.getDeepInt   ("$ROOT_BASIC.等级", 0) ?: 0
 
-        // C. 数值合并并转换
-        val realDmgMoreMultiplier     = (modDmgMore + nbtDmgMore).toMultiplier()
-        val realDmgBonusMultiplier    = (modDmgBonus + nbtDmgBonus).toMultiplier()
-        val realExtraRangeMultiplier  = (modExtraRange + nbtRangeRaw).toMultiplier()
+        //  数值合并并转换
+        val realDmgMoreMultiplier     = (modPlayerDmgMore + nbtDmgMore + modBookDmgMore).toMultiplier()
+        val realDmgBonusMultiplier    = (modPlayerBonus + nbtDmgBonus + modBookDmgBonus).toMultiplier()
+        val realExtraRangeMultiplier  = (modPlayerExtraRange + nbtRangeRaw + modBookExtraRange).toMultiplier()
         val realBaseMultiplierPercent = (setting.multiplierUp * nbtLevel + setting.baseMultiplier + nbtMultiplier).toPercent()
-        val realSkillPower            = (modSkillPower + nbtSkillPower).toMultiplier()
+        val realSkillPower            = (modPlayerSkillPower + nbtSkillPower + modBookSkillPower).toMultiplier()
+
         // 同步变量到 MythicMobs
-        setSkillData(player, "${skillId}_BaseMultiplier", realBaseMultiplierPercent)
-        setSkillData(player, "${skillId}_dmgmore", realDmgMoreMultiplier)
-        setSkillData(player, "${skillId}_range", realExtraRangeMultiplier)
-        setSkillData(player, "${skillId}_dmgbonus", realDmgBonusMultiplier)
-        setSkillData(player, "${skillId}_skillpower", realSkillPower)
+        setSkillData(player, "${skillId}_basemultiplier", realBaseMultiplierPercent) //技能倍率
+        setSkillData(player, "${skillId}_dmgmore", realDmgMoreMultiplier) //最终伤害
+        setSkillData(player, "${skillId}_range", realExtraRangeMultiplier) //额外范围
+        setSkillData(player, "${skillId}_dmgbonus", realDmgBonusMultiplier) //伤害加成
+        setSkillData(player, "${skillId}_skillpower", realSkillPower) //技能强度
+
         if (DEBUG) {
             println("""
                 [Debug] --- 属性同步详情 ($skillId) ---
                 > 最终效率: $totalEfficiency%
                 > 基础倍率: $realBaseMultiplierPercent% (等级 $nbtLevel + NBT:$nbtMultiplier)
-                > 最终伤害 (More): $realDmgMoreMultiplier x (MOD:$modDmgMore + NBT:$nbtDmgMore)
-                > 伤害加成 (Bonus): $realDmgBonusMultiplier x (MOD:$modDmgBonus + NBT:$nbtDmgBonus)
+                > 最终伤害 (More): $realDmgMoreMultiplier x (技能MOD:$modBookDmgMore + 玩家MOD:$modPlayerDmgMore + NBT:$nbtDmgMore)
+                > 伤害加成 (Bonus): $realDmgBonusMultiplier x (技能MOD:$modBookDmgBonus + 玩家MOD:$modPlayerBonus + NBT:$nbtDmgBonus)
                 > 额外范围: $realExtraRangeMultiplier x
                 > 技能强度: $realSkillPower x
             """.trimIndent())
         }
 
         /* --- 6. 释放技能 --- */
-        val success = Mythic.Companion.API.castSkill(caster = player, skillName = setting.mmSkill)
+        val success = Mythic.API.castSkill(caster = player, skillName = setting.mmSkill)
 
         if (success) {
             // 计算最终 CD 缩减 (MOD总和 + 技能书NBT)
-            val modCdReduction = modStats.cdReduction
+            val modCdReductionPlayer = playerGlobalStats.cdReduction
+            val modCdReductionSkill = bookModStats.cdReduction
+
             val nbtCdReduction = item?.getDeepDouble("$ROOT_MODIFIER.冷却缩减", 0.0) ?: 0.0
-            val totalCdReduction = (modCdReduction + nbtCdReduction).coerceAtLeast(0.0)
+            val totalCdReduction = (modCdReductionPlayer + nbtCdReduction + modCdReductionSkill).coerceAtLeast(0.0)
 
             RpgRuntime.setCooldown(player, skillId, setting.cooldown, totalCdReduction)
 
             if (DEBUG) {
-                println("[Debug] [成功] 释放成功 | 最终CD缩减: $totalCdReduction% (MOD:$modCdReduction + NBT:$nbtCdReduction)")
+                println("[Debug] [成功] 释放成功 | 最终CD缩减: $totalCdReduction% (技能MOD:$modCdReductionSkill + 玩家MOD:$modCdReductionPlayer + NBT:$nbtCdReduction)")
             }
         } else {
             RpgRuntime.giveMana(player, finalBaseMana)

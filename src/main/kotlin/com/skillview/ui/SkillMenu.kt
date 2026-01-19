@@ -1,8 +1,8 @@
 package com.skillview.ui
 
+import com.skillview.core.skill.SkillPacketSender
 import com.skillview.data.RpgDefinitions
 import com.skillview.data.SkillStorage
-import com.skillview.util.SkillPacketSender
 import com.skillview.util.getDeepString
 import com.skillview.util.hasCustomTag
 import org.bukkit.Material
@@ -69,7 +69,6 @@ object SkillMenu {
                             true
                         },
                         failedCallback = {
-                            event.clicker.sendMessage("&c只能放入技能书！且不可重复！".colored())
                         }
                     )
                 }

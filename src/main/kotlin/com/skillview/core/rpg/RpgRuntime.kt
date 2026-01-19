@@ -1,7 +1,7 @@
 package com.skillview.core.rpg
 
-import com.skillview.core.mod.ModRuntime
-import com.skillview.util.SkillPacketSender
+import com.skillview.core.mod.PlayerModLogic
+import com.skillview.core.skill.SkillPacketSender
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerJoinEvent
@@ -19,10 +19,10 @@ object RpgRuntime {
     private val manaMap = ConcurrentHashMap<UUID, Double>()
     private const val DEFAULT_MANA = 100.0
 
-    // 新增：回蓝任务（每秒执行一次）
+    // 回蓝任务
     @Awake(LifeCycle.ACTIVE)
     private fun startManaRegenTask() {
-        submit(period = 20L) {  // 每 20 tick = 1 秒
+        submit(period = 20L) {  // 1 秒
             Bukkit.getOnlinePlayers().forEach { player ->
                 regenMana(player)
             }
@@ -34,9 +34,9 @@ object RpgRuntime {
      * 恢复量 = 基础回蓝 + AttributePlus 的“魔力恢复”属性值
      */
     private fun regenMana(player: Player) {
-        val modStats = ModRuntime.getStats(player)
-        // 你可以在这里加一个基础回蓝常量，例如 2.0
-        val baseRegen = 2.0  // 可改为从配置读取
+        val modStats = PlayerModLogic.getStats(player)
+
+        val baseRegen = 2.0
 
         // 从 Mod 获取额外回蓝
         val modRegen = modStats.manaRegen
@@ -102,7 +102,7 @@ object RpgRuntime {
     //          蓝量管理
     // ==========================================
 
-    fun getMaxMana(player: Player): Double = DEFAULT_MANA + ModRuntime.getStats(player).extraMana
+    fun getMaxMana(player: Player): Double = DEFAULT_MANA + PlayerModLogic.getStats(player).extraMana
 
     fun getMana(player: Player): Double {
         return manaMap[player.uniqueId] ?: getMaxMana(player).also { manaMap[player.uniqueId] = it }
