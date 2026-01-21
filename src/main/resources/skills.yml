@@ -1,5 +1,6 @@
 fireball: #技能书id
   mm-skill: "MM_Fireball"
+  BaseAttr: "魔法伤害"
   BaseMultiplier: 100
   cooldown: 5.0
   mana: 20
