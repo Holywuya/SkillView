@@ -59,7 +59,6 @@ object SkillModLogic {
 
     /**
      * 获取技能书特定槽位上的 MOD 物品
-     * 用于 UI 渲染回显
      */
     fun getModInSlot(book: ItemStack, index: Int): ItemStack? {
         if (book.isAir()) return null
@@ -76,8 +75,7 @@ object SkillModLogic {
     }
 
     /**
-     * 【核心函数】汇总技能书上所有 MOD 的属性
-     * 供 SkillCaster 释放技能时调用
+     *  汇总技能书上所有 MOD 的属性
      */
     fun getSkillBookModStats(book: ItemStack?): ModStats.ModStats {
         val totalStats = ModStats.ModStats()
@@ -85,7 +83,7 @@ object SkillModLogic {
 
         // 1. 获取所有定义的属性列表
         val attributes = try {
-            RpgDefinitions.MOD_GLOBAL_ATTRIBUTES
+            RpgDefinitions.SkillMod_ATTRIBUTES
         } catch (e: Exception) {
             listOf("伤害加成", "最终伤害", "冷却缩减", "技能效率")
         }

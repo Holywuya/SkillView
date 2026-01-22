@@ -33,7 +33,6 @@ object SkillPapiHook : PlaceholderExpansion {
 
     /**
      * 处理离线玩家变量请求
-     * 注意：SkillStorage 使用的是 DataContainer，它通常能通过离线玩家 UUID 获取数据
      */
     override fun onPlaceholderRequest(player: OfflinePlayer?, args: String): String {
         if (player == null) return "0"
@@ -43,11 +42,8 @@ object SkillPapiHook : PlaceholderExpansion {
             return onPlaceholderRequest(player.player, args)
         }
 
-        // 处理离线逻辑（如果你的 SkillStorage 支持 OfflinePlayer）
         return when (args.lowercase()) {
             "star_points" -> {
-                // 如果你的 getDataContainer 支持 OfflinePlayer，可以直接读取
-                // 这里我们假设 DataContainer 必须是在线玩家，如果离线则显示 0
                 "0"
             }
             else -> "未知变量"

@@ -1,5 +1,7 @@
 package com.skillview.data
 
+import taboolib.common.LifeCycle
+import taboolib.common.platform.Awake
 import taboolib.module.configuration.Configuration
 
 /**
@@ -9,11 +11,18 @@ import taboolib.module.configuration.Configuration
  */
 object RpgDefinitions {
 
+
     @taboolib.module.configuration.Config("config.yml")
     lateinit var con: Configuration
 
     object Config {
-        val DEBUG by lazy { con.getBoolean("DEBUG") }
+
+        var DEBUG = false
+
+        @Awake(LifeCycle.ENABLE)
+        fun onEnable() {
+            DEBUG = con.getBoolean("DEBUG", false)
+        }
     }
 
     // ==========================================
@@ -49,16 +58,6 @@ object RpgDefinitions {
         const val COST = "$ROOT_MOD.消耗"                    // 容量消耗
         const val POLARITY = "$ROOT_MOD.极性"                // 极性（如 "V"、"D"）
 
-        // 强化石专属：用于镶嵌到技能书的属性节点
-        const val ROOT_STONE = "强化石属性强化"
-        const val STONE_DAMAGE_MORE = "$ROOT_STONE.最终伤害"
-        const val STONE_EXTRA_RANGE = "$ROOT_STONE.额外范围"
-        const val STONE_COOLDOWN = "$ROOT_STONE.冷却缩减"
-        const val STONE_MANA_MAX = "$ROOT_STONE.魔力上限"
-        const val STONE_DAMAGE_BONUS = "$ROOT_STONE.伤害加成"
-        const val STONE_EFFICIENCY = "$ROOT_STONE.技能效率"
-        const val STONE_MULTIPLIER = "$ROOT_STONE.技能倍率"
-        const val STONE_MANA_REDUCE = "$ROOT_STONE.魔力减耗"
     }
 
     // ==========================================
@@ -67,9 +66,8 @@ object RpgDefinitions {
 
     /**
      * 可强化属性白名单
-     * 用于强化石镶嵌/拆解、ModRuntime 统计等
      */
-    val UPGRADEABLE_ATTRIBUTES = listOf(
+    val SkillMod_ATTRIBUTES = listOf(
         "最终伤害",
         "额外范围",
         "冷却缩减",
@@ -79,16 +77,12 @@ object RpgDefinitions {
         "技能倍率",
         "魔力减耗",
         "魔力恢复"
-        // 如需扩展，直接在此添加
-        // "暴击几率",
-        // "破甲攻击"
     )
 
     /**
      * 角色Mod 提供的全局属性列表
-     * 用于 ModRuntime.recalculate 时遍历统计
      */
-    val MOD_GLOBAL_ATTRIBUTES = listOf(
+    val PlayerMod_ATTRIBUTES = listOf(
         // 伤害类
         "伤害加成",
         "最终伤害",
