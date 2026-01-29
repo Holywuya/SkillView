@@ -109,7 +109,7 @@ object SkillCaster {
         // 同步变量到 MythicMobs
         val skillAttr = conf.getString("BaseAttr") ?:"物理伤害"
         val playerAttr = getattr(player,skillAttr)
-        val finalDamage = ((playerAttr * realBaseMultiplierPercent * realSkillPower) * realDmgBonusMultiplier) * realDmgMoreMultiplier
+        val finalDamage = (((playerAttr * realBaseMultiplierPercent * realSkillPower) * realDmgBonusMultiplier) * realDmgMoreMultiplier).keepOneDecimal()
         setSkillData(player, "${skillId}_range", realExtraRangeMultiplier) //额外范围
         setSkillData(player,"${skillId}_damage",finalDamage)
 

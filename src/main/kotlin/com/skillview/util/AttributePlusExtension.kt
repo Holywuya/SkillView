@@ -13,17 +13,24 @@ fun getattr(player: LivingEntity, attr: String): Double {
 }
 
 /**
- * 为玩家添加特定的 AP 属性
+ * 为实体添加特定的 AP 属性
  * @param source 来源 ID (同一个 ID 的再次调用会覆盖旧属性)
  */
-fun addPlayerAttribute(player: Player, source: String, attrName: String, value: Double) {
-    val attrData = AttributeAPI.getAttrData(player as LivingEntity)
 
-    val map = HashMap<String, Array<Number>>()
-    map[attrName] = arrayOf(value)
+fun addEntityAttribute(
+    entity: LivingEntity,
+    source: String,
+    attrName: String,
+    value: Double,
+    time: Double = -1.0,  // -1 表示永久，>0 表示持续时间（秒）
+    saveToDatabase: Boolean = false  // 是否保存到数据库（玩家下线后保留）
+) {
+    val attrData = AttributeAPI.getAttrData(entity)
 
-    // 调用 API 添加源属性，async = true 异步更新防止卡顿
-    AttributeAPI.addSourceAttribute(attrData, source, map, true)
+    val attributes = listOf("$attrName:$value")
+
+    // 使用带 saveToDatabase 参数的重载（如果不需要保存到数据库可省略，默认 false）
+    AttributeAPI.addPersistentSourceAttribute(attrData, source, attributes, time, saveToDatabase)
 }
 
 /**

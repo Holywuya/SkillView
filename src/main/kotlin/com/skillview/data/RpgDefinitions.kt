@@ -11,7 +11,6 @@ import taboolib.module.configuration.Configuration
  */
 object RpgDefinitions {
 
-
     @taboolib.module.configuration.Config("config.yml")
     lateinit var con: Configuration
 
@@ -33,31 +32,26 @@ object RpgDefinitions {
      * 技能书专属 NBT 常量
      */
     object SkillBookNBT {
-        const val TYPE = "类型"
-        const val RARITY = "品质"
-        const val ROOT_BASIC = "技能书基础属性"               // 技能书基础节点
-        const val ROOT_MODIFIER = "技能书属性强化"            // 强化/升级后属性节点（Mod属性叠加）
-        const val ROOT_MOD = "Mod属性" // 全局Mod属性根节点（与角色Mod共享）
-        const val MOD_SLOTS = "Mod系统"                  // 镶嵌Mod
-
-        const val SKILL_ID = "$ROOT_BASIC.技能id"            // 技能ID（如 "fireball"）
-        const val LEVEL = "$ROOT_BASIC.等级"                 // 当前等级（升级时写入）
-
+        const val TYPE = NbtPaths.SkillBook.TYPE
+        const val RARITY = NbtPaths.SkillBook.RARITY
+        const val ROOT_BASIC = NbtPaths.SkillBook.ROOT_BASIC
+        const val ROOT_MODIFIER = NbtPaths.SkillBook.ROOT_MODIFIER
+        const val MOD_SLOTS = NbtPaths.SkillBook.MOD_SLOTS
+        const val SKILL_ID = NbtPaths.SkillBook.SKILL_ID
+        const val LEVEL = NbtPaths.SkillBook.LEVEL
     }
 
     /**
      * MOD（角色Mod & 技能Mod/强化石）专属 NBT 常量
      */
     object ModNBT {
-        const val TYPE = "类型"                              // "角色Mod" 或 "技能Mod"
-        const val RARITY = "品质"                            // "普通"、"精良" 等
-        const val LEVEL = "Mod.等级"                         // 当前强化等级
-        const val MOD_ID = "Mod.id"
-
-        const val ROOT_MOD = "Mod属性"                       // 角色Mod属性根节点
-        const val COST = "$ROOT_MOD.消耗"                    // 容量消耗
-        const val POLARITY = "$ROOT_MOD.极性"                // 极性（如 "V"、"D"）
-
+        const val TYPE = NbtPaths.Mod.TYPE
+        const val RARITY = NbtPaths.Mod.RARITY
+        const val LEVEL = NbtPaths.Mod.LEVEL
+        const val MOD_ID = NbtPaths.Mod.MOD_ID
+        const val ROOT_MOD = NbtPaths.Mod.ROOT_MOD
+        const val COST = NbtPaths.Mod.COST
+        const val POLARITY = NbtPaths.Mod.POLARITY
     }
 
     // ==========================================
@@ -67,37 +61,12 @@ object RpgDefinitions {
     /**
      * 可强化属性白名单
      */
-    val SkillMod_ATTRIBUTES = listOf(
-        "最终伤害",
-        "额外范围",
-        "冷却缩减",
-        "魔力上限",
-        "伤害加成",
-        "技能效率",
-        "技能倍率",
-        "魔力减耗",
-        "魔力恢复"
-    )
+    val SkillMod_ATTRIBUTES = RpgConstants.AttributeLists.SKILL_MOD_ATTRIBUTES
 
     /**
      * 角色Mod 提供的全局属性列表
      */
-    val PlayerMod_ATTRIBUTES = listOf(
-        // 伤害类
-        "伤害加成",
-        "最终伤害",
-        "暴击几率",
-        "暴伤倍率",
-        "技能强度",
-        // 生存类
-        "生命力",
-        // 功能类
-        "额外范围",
-        "冷却缩减",
-        "魔力恢复",
-        "魔力上限",
-        "技能效率"
-    )
+    val PlayerMod_ATTRIBUTES = RpgConstants.AttributeLists.PLAYER_MOD_ATTRIBUTES
 
     // ==========================================
     //          AttributePlus 属性名常量
@@ -108,60 +77,16 @@ object RpgDefinitions {
      * 统一在此管理，避免字符串散落
      */
     object Attributes {
-        const val COOLDOWN = "冷却缩减"
-        const val EFFICIENCY = "技能效率"
-        const val MANA_MAX = "魔力上限"
-        const val MANA_REGEN = "魔力恢复"
-        const val DAMAGE_BONUS = "伤害加成"
-        const val DAMAGE_MORE = "最终伤害"
-        const val EXTRA_RANGE = "额外范围"
-        const val SKILL_POWER = "技能强度"
-        const val CRIT_RATE = "暴击几率"
-        const val CRIT_DAMAGE = "暴伤倍率"
-        const val MAX_HP = "生命力"
+        const val COOLDOWN = RpgConstants.AttributeNames.COOLDOWN
+        const val EFFICIENCY = RpgConstants.AttributeNames.EFFICIENCY
+        const val MANA_MAX = RpgConstants.AttributeNames.MANA_MAX
+        const val MANA_REGEN = RpgConstants.AttributeNames.MANA_REGEN
+        const val DAMAGE_BONUS = RpgConstants.AttributeNames.DAMAGE_BONUS
+        const val DAMAGE_MORE = RpgConstants.AttributeNames.DAMAGE_MORE
+        const val EXTRA_RANGE = RpgConstants.AttributeNames.EXTRA_RANGE
+        const val SKILL_POWER = RpgConstants.AttributeNames.SKILL_POWER
+        const val CRIT_RATE = RpgConstants.AttributeNames.CRIT_RATE
+        const val CRIT_DAMAGE = RpgConstants.AttributeNames.CRIT_DAMAGE
+        const val MAX_HP = RpgConstants.AttributeNames.MAX_HP
     }
 }
-
-// ==========================================
-//           数据类定义 (Data Classes)
-// ==========================================
-
-/**
- * 技能配置结构 (对应 skills.yml)
- */
-data class SkillSetting(
-    val mmSkill: String,        // MythicMobs 里的技能名
-    val cooldown: Double,       // 基础冷却
-    val mana: Int,              // 基础耗蓝
-    val baseMultiplier: Double, // 基础倍率
-    val maxLevel: Int,          // 最大等级
-    val reduceMana: Double,     // 升级减少魔力消耗
-    val reduceCd: Double,       // 升级减少冷却时间
-    val multiplierUp: Double,   // 升级提升技能倍率
-
-    // --- 新增内容 ---
-    val enhanceMultiplier: Double, // 每次“强化/镶嵌”额外增加的倍率
-    val tags: List<String>         // 技能标签 (例如: ["伤害", "范围", "火"])
-)
-
-/**
- * 职业定义 (对应 classes.yml)
- */
-data class RpgClass(
-    val baseHealth: Double,
-    val baseMana: Double,
-    val manaRegen: Double       // 每秒回蓝
-)
-
-/**
- * MOD/灵石的配置数据类
- */
-data class ModSetting(
-    val rarity: String,         // 稀有度
-    val polarity: String,       // 极性 (V, D, -, =)
-    val baseDrain: Int,         // 基础消耗
-    val drainStep: Int,         // 等级成长消耗
-    val maxLevel: Int,          // 最大等级
-    val attributes: Map<String, Double>, // 属性增量表 (属性名 to 每级增量)
-    val tags: List<String>      // 标签
-)
