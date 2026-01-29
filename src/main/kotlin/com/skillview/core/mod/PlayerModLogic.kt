@@ -19,16 +19,11 @@ object PlayerModLogic {
     private val playerModStats = ConcurrentHashMap<UUID, ModStats>()
     private const val MOD_NBT_ROOT = RpgDefinitions.ModNBT.ROOT_MOD
 
-
     @SubscribeEvent
     fun onJoin(e: PlayerJoinEvent) {
         val player = e.player
-        val uuid = player.uniqueId
+        playerModStats[player.uniqueId] = ModStats()
 
-        // 初始化一个空的 Stats 对象
-        playerModStats[uuid] = ModStats()
-
-        // 采用 100 刻延迟读取，确保数据库和属性插件全部加载完毕
         submit(delay = 100L) {
             if (player.isOnline) {
                 recalculate(player)
@@ -38,31 +33,18 @@ object PlayerModLogic {
 
     @SubscribeEvent
     fun onQuit(e: PlayerQuitEvent) {
-        // 玩家离线，立即清理内存缓存
-        removeCache(e.player.uniqueId)
+        playerModStats.remove(e.player.uniqueId)
     }
 
-// --- [逻辑操作] ---
-
-    /**
-     * 重新计算玩家的 MOD 属性汇总
-     */
     fun recalculate(player: Player) {
         val loadout = SkillStorage.getModLoadout(player)
         val stats = ModStats()
 
-        val attributes = try {
-            RpgDefinitions.PlayerMod_ATTRIBUTES
-        } catch (e: Exception) {
-            listOf("魔力上限", "冷却缩减", "伤害加成", "技能效率")
-        }
-
         loadout.mods.values.forEach { item ->
             if (item.isAir()) return@forEach
 
-            attributes.forEach { attrName ->
-                val path = "$MOD_NBT_ROOT.$attrName"
-                val value = item.getDeepDouble(path, 0.0)
+            RpgDefinitions.PlayerMod_ATTRIBUTES.forEach { attrName ->
+                val value = item.getDeepDouble("$MOD_NBT_ROOT.$attrName", 0.0)
                 if (value != 0.0) {
                     stats.add(attrName, value)
                 }
@@ -71,16 +53,9 @@ object PlayerModLogic {
         playerModStats[player.uniqueId] = stats
     }
 
-    /**
-     * 获取玩家当前的 MOD 属性缓存
-     */
-    fun getStats(player: Player): ModStats {
-        return playerModStats[player.uniqueId] ?: ModStats()
-    }
+    fun getStats(player: Player): ModStats =
+        playerModStats[player.uniqueId] ?: ModStats()
 
-    /**
-     * 清理缓存
-     */
     fun removeCache(uuid: UUID) {
         playerModStats.remove(uuid)
     }

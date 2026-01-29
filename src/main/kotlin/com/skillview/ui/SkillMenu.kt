@@ -18,16 +18,13 @@ import taboolib.platform.util.isAir
 
 object SkillMenu {
 
-    private val CHAR_TO_SLOT = mapOf('A' to 11, 'B' to 12, 'C' to 13, 'D' to 14, 'E' to 15)
+    private val SLOT_MAPPING = mapOf('A' to 11, 'B' to 12, 'C' to 13, 'D' to 14, 'E' to 15)
+    private val SKILL_SLOTS = SLOT_MAPPING.values.toList()
     private const val SKILL_TAG = RpgDefinitions.SkillBookNBT.SKILL_ID
 
     fun openSkillEquipMenu(player: Player) {
         player.openMenu<Chest>("&8技能装备栏".colored()) {
-            map(
-                "#########",
-                "##ABCDE##",
-                "#########"
-            )
+            map("#########", "##ABCDE##", "#########")
 
             set('#', buildItem(XMaterial.GRAY_STAINED_GLASS_PANE) { name = " " }) { isCancelled = true }
 
@@ -37,28 +34,16 @@ object SkillMenu {
                     return@onClick
                 }
 
-                CHAR_TO_SLOT.values.forEach { targetSlot ->
+                SKILL_SLOTS.forEach { targetSlot ->
                     event.conditionSlot(targetSlot,
                         condition = { put, _ ->
-                            // 1. 取回物品动作允许
                             if (put == null || put.isAir()) return@conditionSlot true
-
-                            // 2. 基础标签校验
                             if (!put.hasCustomTag(SKILL_TAG)) return@conditionSlot false
 
-                            // 3. 查重逻辑
                             val incomingId = put.getDeepString(SKILL_TAG)
-
-                            // 检查 A-E 其他槽位是否已经存在相同 ID 的技能
-                            val isDuplicate = CHAR_TO_SLOT.values.any { otherSlot ->
-                                // 跳过当前正在点击的格子
-                                if (otherSlot == targetSlot) return@any false
-
-                                val itemInOtherSlot = event.inventory.getItem(otherSlot)
-                                if (itemInOtherSlot == null || itemInOtherSlot.isAir()) return@any false
-
-                                // 对比技能 ID
-                                itemInOtherSlot.getDeepString(SKILL_TAG) == incomingId
+                            val isDuplicate = SKILL_SLOTS.any { otherSlot ->
+                                otherSlot != targetSlot &&
+                                event.inventory.getItem(otherSlot)?.getDeepString(SKILL_TAG) == incomingId
                             }
 
                             if (isDuplicate) {
@@ -68,8 +53,7 @@ object SkillMenu {
 
                             true
                         },
-                        failedCallback = {
-                        }
+                        failedCallback = {}
                     )
                 }
             }
@@ -77,20 +61,16 @@ object SkillMenu {
             onBuild { _, inventory ->
                 val loadout = SkillStorage.getSkillLoadout(player)
 
-                CHAR_TO_SLOT.entries.forEachIndexed { index, entry ->
+                SLOT_MAPPING.entries.forEachIndexed { index, entry ->
                     val savedItem = loadout.slots[index]
-                    if (savedItem != null && !savedItem.isAir()) {
-                        inventory.setItem(entry.value, savedItem)
-                    } else {
-                        inventory.setItem(entry.value, ItemStack(Material.AIR))
-                    }
+                    inventory.setItem(entry.value, savedItem ?: ItemStack(Material.AIR))
                 }
             }
 
             onClose { event ->
                 val newLoadout = SkillStorage.SkillLoadout()
 
-                CHAR_TO_SLOT.entries.forEachIndexed { index, entry ->
+                SLOT_MAPPING.entries.forEachIndexed { index, entry ->
                     val item = event.inventory.getItem(entry.value)
                     if (item != null && !item.isAir() && item.hasCustomTag(SKILL_TAG)) {
                         newLoadout.slots[index] = item
