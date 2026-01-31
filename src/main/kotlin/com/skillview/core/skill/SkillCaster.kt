@@ -96,7 +96,7 @@ object SkillCaster {
         val realBaseMultiplierPercent = (setting.multiplierUp * nbt.level + setting.baseMultiplier + nbt.multiplier).toPercent()
         val realSkillPower = (playerGlobalStats.skillPower + nbt.skillPower + bookModStats.skillPower).toMultiplier()
 
-        val basePlayerDamage = conf.getDouble("BasePlayerDamage", 100.0)
+        val basePlayerDamage = AttributeCoreHelper.getAttackDamage(player)
         val finalDamage = (((basePlayerDamage * realBaseMultiplierPercent * realSkillPower) * realDmgBonusMultiplier) * realDmgMoreMultiplier).round()
         
         setSkillData(player, "${skillId}_range", realExtraRangeMultiplier)

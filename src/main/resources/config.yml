@@ -1,9 +1,6 @@
 ##调试模式
 DEBUG: false
 
-# 基础玩家伤害值（用于技能伤害计算）
-BasePlayerDamage: 100.0
-
 # 数据库配置
 Database:
   # false = 使用本地 SQLite (data.db)

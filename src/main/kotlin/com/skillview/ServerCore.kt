@@ -21,7 +21,7 @@ object SkillView : Plugin() {
 
         checkPlugin("PlaceholderAPI", optional = true) { "PlaceholderAPI 扩展已通过动态钩子注册！" }
         checkPlugin("Arcartx", optional = false) { "Arcartx 扩展已注册！" }
-        checkPlugin("AttributePlus", optional = true) { "AttributePlus 扩展已注册！" }
+        checkPlugin("AttributeCore", optional = true) { "AttributeCore 扩展已注册！" }
 
         if (Mythic.isLoaded()) {
             val version = if (Mythic.API.isLegacy) "4.X" else "5.X"
