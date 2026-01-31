@@ -146,7 +146,7 @@ object WeaponMod {
                     }
 
                     event.conditionSlot(rawSlot,
-                        condition = { put, _ ->
+                        condition = { put, taken ->
                             if (put == null || put.isAir()) {
                                 submit(delay = 1) { updateCapacityDisplay(inventory) }
                                 return@conditionSlot true
@@ -167,6 +167,16 @@ object WeaponMod {
 
                             if (isDuplicate) {
                                 player.sendMessage("&c你已经装备了相同的Mod！".colored())
+                                return@conditionSlot false
+                            }
+
+                            val currentUsed = CapacitySystem.calculateUsedCapacity(inventory, modSlotIds)
+                            val takenCost = if (taken != null && !taken.isAir()) taken.getModCost() else 0
+                            val putCost = put.getModCost()
+                            val newUsed = currentUsed - takenCost + putCost
+                            
+                            if (newUsed > DEFAULT_CAPACITY) {
+                                player.sendMessage("&c容量不足！需要: &e$newUsed&c/&f$DEFAULT_CAPACITY &7(超出 &c${newUsed - DEFAULT_CAPACITY}&7)".colored())
                                 return@conditionSlot false
                             }
 

@@ -1,8 +1,10 @@
 package com.skillview.ui.mod
 
+import com.skillview.core.mod.CapacitySystem
 import com.skillview.core.mod.SkillModLogic
 import com.skillview.data.RpgDefinitions
 import com.skillview.util.getDeepString
+import com.skillview.util.getModCost
 import com.skillview.util.hasCustomTag
 import com.skillview.util.hasTagValue
 import org.bukkit.Sound
@@ -24,6 +26,7 @@ object SkillMod {
 
     private const val SKILL_TAG_KEY = "技能书基础属性.技能id"
     private const val MOD_TYPE_VALUE = "技能Mod"
+    private const val DEFAULT_CAPACITY = 60
 
     fun openSkillMod(player: Player) {
         player.openMenu<Chest>("&8技能MOD配装系统".colored()) {
@@ -32,13 +35,29 @@ object SkillMod {
                 "#########",
                 "###M#M###",
                 "###M#M###",
-                "####U####"
+                "###C#B###"
             )
 
             val modSlotIds = getSlots('M')
-            val bookSlotId = getFirstSlot('U')
+            val bookSlotId = getFirstSlot('B')
+            val capacitySlotId = getFirstSlot('C')
 
             set('#', buildItem(XMaterial.GRAY_STAINED_GLASS_PANE) { name = " " }) { isCancelled = true }
+
+            fun updateCapacityDisplay(inventory: Inventory) {
+                val used = CapacitySystem.calculateUsedCapacity(inventory, modSlotIds)
+                val max = DEFAULT_CAPACITY
+                val color = if (used <= max) "&a" else "&c"
+                
+                inventory.setItem(capacitySlotId, buildItem(XMaterial.EXPERIENCE_BOTTLE) {
+                    name = "&e容量: $color$used&7/&f$max".colored()
+                    lore.addAll(listOf(
+                        "",
+                        if (used <= max) "&a✔ 容量正常" else "&c✖ 超出容量！",
+                        "&7极性匹配可减少消耗"
+                    ).map { it.colored() })
+                })
+            }
 
             fun refreshModDisplay(inventory: Inventory) {
                 // 1. 先清空 MOD 槽位
@@ -63,6 +82,7 @@ object SkillMod {
                         })
                     }
                 }
+                updateCapacityDisplay(inventory)
             }
 
             // 2. onBuild 直接调用刷新函数
@@ -126,8 +146,11 @@ object SkillMod {
                     }
 
                     event.conditionSlot(rawSlot,
-                        condition = { put, _ ->
-                            if (put == null || put.isAir()) return@conditionSlot true
+                        condition = { put, taken ->
+                            if (put == null || put.isAir()) {
+                                submit(delay = 1) { updateCapacityDisplay(inventory) }
+                                return@conditionSlot true
+                            }
                             if (!put.hasTagValue(RpgDefinitions.ModNBT.TYPE, MOD_TYPE_VALUE)) {
                                 player.sendMessage("&c只能放入类型为 '$MOD_TYPE_VALUE' 的物品！".colored())
                                 return@conditionSlot false
@@ -145,6 +168,18 @@ object SkillMod {
                                 player.sendMessage("&c你已经装备了一个相同的Mod了！".colored())
                                 return@conditionSlot false
                             }
+
+                            val currentUsed = CapacitySystem.calculateUsedCapacity(inventory, modSlotIds)
+                            val takenCost = if (taken != null && !taken.isAir()) taken.getModCost() else 0
+                            val putCost = put.getModCost()
+                            val newUsed = currentUsed - takenCost + putCost
+                            
+                            if (newUsed > DEFAULT_CAPACITY) {
+                                player.sendMessage("&c容量不足！需要: &e$newUsed&c/&f$DEFAULT_CAPACITY &7(超出 &c${newUsed - DEFAULT_CAPACITY}&7)".colored())
+                                return@conditionSlot false
+                            }
+
+                            submit(delay = 1) { updateCapacityDisplay(inventory) }
                             true
                         }
                     )

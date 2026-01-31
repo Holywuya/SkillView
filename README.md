@@ -2,7 +2,7 @@
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Holywuya/SkillView)
 
-**版本: 1.5.2.1**
+**版本: 1.5.2.2**
 
 Warframe风格的技能与MOD系统插件，基于 TabooLib 6.x 开发。
 
@@ -52,6 +52,20 @@ Warframe风格的技能与MOD系统插件，基于 TabooLib 6.x 开发。
 ```
 
 ## 更新日志
+
+### v1.5.2.2
+
+**容量系统强化:**
+- **武器MOD**: 添加容量超限拦截，超出容量时阻止装备并显示详细错误信息
+- **角色MOD**: 添加完整的容量显示和验证系统（之前完全缺失）
+- **技能MOD**: 添加完整的容量显示和验证系统（之前完全缺失）
+- 所有MOD配装界面现在显示：已用容量/总容量，极性匹配提示
+- 超出容量时显示："&c容量不足！需要: &eXX&c/&f60 &7(超出 &cX&7)"
+
+**修改文件:**
+- WeaponMod.kt - 在 conditionSlot 中添加容量检查逻辑
+- PlayerMod.kt - 添加容量显示、更新逻辑和装备验证
+- SkillMod.kt - 添加容量显示、布局调整和装备验证
 
 ### v1.5.2.1
 
