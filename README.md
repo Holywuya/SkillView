@@ -2,7 +2,7 @@
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Holywuya/SkillView)
 
-**版本: 1.5.2.0**
+**版本: 1.5.2.1**
 
 Warframe风格的技能与MOD系统插件，基于 TabooLib 6.x 开发。
 
@@ -53,6 +53,17 @@ Warframe风格的技能与MOD系统插件，基于 TabooLib 6.x 开发。
 
 ## 更新日志
 
+### v1.5.2.1
+
+**Bug 修复:**
+- 修复 AttributeCore API 调用错误：将属性键从 `"attack_damage"` (占位符) 改为 `"攻击力"` (实际属性名)
+- 该修复确保技能伤害计算能正确读取玩家的攻击力属性值
+
+**技术细节:**
+- AttributeCore 内部使用中文属性名作为键 (如 `"攻击力"`)
+- `"attack_damage"` 仅用于 PlaceholderAPI 占位符
+- 更新后的 API 调用：`AttributeCoreAPI.getAttribute(player, "攻击力")`
+
 ### v1.5.2.0
 
 **AttributeCore 集成:**
@@ -69,7 +80,7 @@ Warframe风格的技能与MOD系统插件，基于 TabooLib 6.x 开发。
 - 现在从 AttributeCore 动态获取攻击力属性
 
 **技术细节:**
-- 使用 `AttributeCoreAPI.getAttribute(player, "attack_damage")` 获取攻击力
+- 使用 `AttributeCoreAPI.getAttribute(player, "攻击力")` 获取攻击力
 - 插件检测机制：运行时检测 AttributeCore 是否安装
 - 安全降级：未安装时自动使用默认值，不影响插件运行
 

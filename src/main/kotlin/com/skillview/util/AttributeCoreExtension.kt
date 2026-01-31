@@ -13,7 +13,7 @@ object AttributeCoreHelper {
     fun getAttackDamage(entity: LivingEntity): Double {
         return if (isAttributeCoreLoaded) {
             try {
-                AttributeCoreAPI.getAttribute(entity, "attack_damage")
+                AttributeCoreAPI.getAttribute(entity, "攻击力")
             } catch (e: Exception) {
                 100.0
             }
