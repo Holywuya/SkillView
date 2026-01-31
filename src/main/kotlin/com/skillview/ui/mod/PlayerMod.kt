@@ -104,7 +104,8 @@ object PlayerMod {
                 }
 
                 SkillStorage.saveModLoadout(player, newLoadout)
-                PlayerModLogic.recalculate(player)
+                SkillStorage.markModDirty(player)
+                PlayerModLogic.markDirty(player)
                 player.sendMessage("&aMod已保存".colored())
             }
         }

@@ -5,6 +5,7 @@ import com.skillview.ui.SkillMenu
 import com.skillview.ui.SkillUpgradeMenu
 import com.skillview.ui.mod.PlayerMod
 import com.skillview.ui.mod.SkillMod
+import com.skillview.ui.mod.WeaponMod
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import taboolib.common.platform.command.*
@@ -22,7 +23,7 @@ object SkillCommand {
     val open = subCommand {
         dynamic("menu") {
             suggestion<Player> { _, _ ->
-                listOf("equip", "upgrade", "player","skill")
+                listOf("equip", "upgrade", "player", "skill", "weapon")
             }
 
             execute<Player> { sender, context, _ ->
@@ -31,7 +32,8 @@ object SkillCommand {
                     "upgrade", "enhance" -> SkillUpgradeMenu.openUpgradeMenu(sender)
                     "player" -> PlayerMod.openPlayerMod(sender)
                     "skill" -> SkillMod.openSkillMod(sender)
-                    else -> sender.sendMessage("§c[系统] 未知的菜单类型! 可选: equip, upgrade, mod".colored())
+                    "weapon" -> WeaponMod.openWeaponMod(sender)
+                    else -> sender.sendMessage("§c[系统] 未知的菜单类型! 可选: equip, upgrade, player, skill, weapon".colored())
                 }
             }
         }

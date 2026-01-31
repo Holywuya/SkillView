@@ -78,6 +78,7 @@ object SkillMenu {
                 }
 
                 SkillStorage.saveSkillLoadout(player, newLoadout)
+                SkillStorage.markSkillDirty(player)
                 player.sendMessage("&a技能栏已保存".colored())
                 SkillPacketSender.sendSkillIdPacket(player)
             }
