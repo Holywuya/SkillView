@@ -88,7 +88,7 @@ object SkillCaster {
             return
         }
 
-        if (DEBUG) println("[Debug] [计算] 正在读取 AP(含MOD) 与 技能书NBT 属性...")
+        if (DEBUG) println("[Debug] [计算] 正在读取技能书NBT与MOD属性...")
 
         val realDmgMoreMultiplier = (playerGlobalStats.damageMore + nbt.dmgMore + bookModStats.damageMore).toMultiplier()
         val realDmgBonusMultiplier = (playerGlobalStats.damageBonus + nbt.dmgBonus + bookModStats.damageBonus).toMultiplier()
@@ -96,9 +96,8 @@ object SkillCaster {
         val realBaseMultiplierPercent = (setting.multiplierUp * nbt.level + setting.baseMultiplier + nbt.multiplier).toPercent()
         val realSkillPower = (playerGlobalStats.skillPower + nbt.skillPower + bookModStats.skillPower).toMultiplier()
 
-        val skillAttr = conf.getString("BaseAttr") ?: "物理伤害"
-        val playerAttr = getattr(player, skillAttr)
-        val finalDamage = (((playerAttr * realBaseMultiplierPercent * realSkillPower) * realDmgBonusMultiplier) * realDmgMoreMultiplier).round()
+        val basePlayerDamage = conf.getDouble("BasePlayerDamage", 100.0)
+        val finalDamage = (((basePlayerDamage * realBaseMultiplierPercent * realSkillPower) * realDmgBonusMultiplier) * realDmgMoreMultiplier).round()
         
         setSkillData(player, "${skillId}_range", realExtraRangeMultiplier)
         setSkillData(player, "${skillId}_damage", finalDamage)

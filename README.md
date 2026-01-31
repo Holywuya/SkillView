@@ -2,7 +2,7 @@
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Holywuya/SkillView)
 
-**版本: 1.5.0.0**
+**版本: 1.5.1.0**
 
 Warframe风格的技能与MOD系统插件，基于 TabooLib 6.x 开发。
 
@@ -19,7 +19,6 @@ Warframe风格的技能与MOD系统插件，基于 TabooLib 6.x 开发。
 ## 依赖插件
 
 - **TabooLib** 6.2.4+
-- **AttributePlus** (属性系统)
 - **MythicMobs** 5.x (技能释放)
 - **ArcartX** (UI渲染)
 - **Vault** (可选, 经济系统)
@@ -52,6 +51,21 @@ Warframe风格的技能与MOD系统插件，基于 TabooLib 6.x 开发。
 ```
 
 ## 更新日志
+
+### v1.5.1.0
+
+**破坏性变更:**
+- 移除 AttributePlus 依赖
+- 技能伤害计算改用配置文件中的 BasePlayerDamage 参数
+
+**删除的文件:**
+- AttributePlusExtension.kt
+- AttributePlusMM.kt
+- APListener.kt
+- libs/AttributePlus-API.jar
+
+**配置变更:**
+- config.yml 新增 BasePlayerDamage 配置项
 
 ### v1.5.0.0
 
