@@ -2,6 +2,7 @@ package com.skillview.ui.mod
 
 import com.skillview.core.mod.CapacitySystem
 import com.skillview.core.mod.PolaritySystem
+import com.skillview.core.mod.SlotPolarityManager
 import com.skillview.data.RpgDefinitions
 import com.skillview.data.SkillStorage
 import com.skillview.util.getDeepString
@@ -44,16 +45,18 @@ object WeaponMod {
 
     fun openWeaponMod(player: Player) {
         player.openMenu<Chest>("&8武器MOD配装系统".colored()) {
-            rows(5)
+            rows(6)
             map(
                 "#########",
                 "##M#W#M##",
                 "##M###M##",
                 "#########",
-                "###C#S###"
+                "###C#S###",
+                "#P#P#P#P#"
             )
 
             val modSlotIds = getSlots('M')
+            val polarityConfigIds = getSlots('P')
             val weaponSlotId = getFirstSlot('W')
             val capacitySlotId = getFirstSlot('C')
             val saveSlotId = getFirstSlot('S')
@@ -82,6 +85,32 @@ object WeaponMod {
                 })
             }
 
+            fun updatePolarityDisplay(inventory: Inventory) {
+                val loadout = getWeaponModLoadout(player)
+                polarityConfigIds.forEachIndexed { index, slotId ->
+                    val polarity = loadout.slotPolarities[index] ?: "无"
+                    val polaritySymbol = when (polarity) {
+                        "V" -> "&c[V]"
+                        "D" -> "&b[D]"
+                        "-" -> "&a[-]"
+                        "=" -> "&9[=]"
+                        "R" -> "&6[R]"
+                        "Y" -> "&d[Y]"
+                        "*" -> "&f[*]"
+                        else -> "&7[无]"
+                    }
+                    
+                    inventory.setItem(slotId, buildItem(XMaterial.AMETHYST_SHARD) {
+                        name = "&e极性 #${index}: $polaritySymbol".colored()
+                        lore.addAll(listOf(
+                            "",
+                            "&7点击配置此槽位的极性",
+                            "&7当前: $polarity"
+                        ).map { it.colored() })
+                    })
+                }
+            }
+
             fun refreshModDisplay(inventory: Inventory) {
                 modSlotIds.forEach { inventory.setItem(it, null) }
                 
@@ -103,6 +132,7 @@ object WeaponMod {
                     }
                 }
                 updateCapacityDisplay(inventory)
+                updatePolarityDisplay(inventory)
             }
 
             onBuild { _, inventory ->
@@ -116,6 +146,32 @@ object WeaponMod {
 
                 if (rawSlot >= event.inventory.size) {
                     event.isCancelled = false
+                    return@onClick
+                }
+
+                if (rawSlot in polarityConfigIds) {
+                    event.isCancelled = true
+                    val slotIndex = polarityConfigIds.indexOf(rawSlot)
+                    val loadout = getWeaponModLoadout(player)
+                    val currentPolarity = loadout.slotPolarities[slotIndex]
+                    
+                    PolaritySelectionMenu.openPolaritySelection(
+                        player = player,
+                        modType = SlotPolarityManager.ModType.WEAPON,
+                        slotIndex = slotIndex,
+                        currentPolarity = currentPolarity
+                    ) { selectedPolarity ->
+                        val updatedLoadout = getWeaponModLoadout(player)
+                        if (selectedPolarity == "无") {
+                            updatedLoadout.slotPolarities.remove(slotIndex)
+                        } else {
+                            updatedLoadout.slotPolarities[slotIndex] = selectedPolarity
+                        }
+                        saveWeaponLoadout(player, inventory, weaponSlotId, modSlotIds)
+                        player.getDataContainer()["weapon_mod_loadout"] = GsonUtils.toJson(updatedLoadout)
+                        loadoutCache[player.uniqueId] = updatedLoadout
+                        player.sendMessage("&a极性 #$slotIndex 已设置为: &e$selectedPolarity".colored())
+                    }
                     return@onClick
                 }
 

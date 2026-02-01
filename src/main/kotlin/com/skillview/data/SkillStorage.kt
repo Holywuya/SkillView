@@ -28,7 +28,8 @@ object SkillStorage {
 
     data class ModLoadout(
         var isCapacityUpgraded: Boolean = false,
-        val mods: MutableMap<Int, ItemStack> = mutableMapOf()
+        val mods: MutableMap<Int, ItemStack> = mutableMapOf(),
+        val slotPolarities: MutableMap<Int, String> = mutableMapOf()
     )
 
     data class SkillLoadout(

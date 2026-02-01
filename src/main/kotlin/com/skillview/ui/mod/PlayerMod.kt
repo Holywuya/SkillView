@@ -2,6 +2,7 @@ package com.skillview.ui.mod
 
 import com.skillview.core.mod.CapacitySystem
 import com.skillview.core.mod.PlayerModLogic
+import com.skillview.core.mod.SlotPolarityManager
 import com.skillview.data.RpgDefinitions
 import com.skillview.data.SkillStorage
 import com.skillview.util.getDeepString
@@ -23,21 +24,51 @@ object PlayerMod {
 
     fun openPlayerMod(player: Player) {
         player.openMenu<Chest>("&8角色MOD配装系统".colored()) {
-            rows(4)
+            rows(5)
             map(
                 "#########",
                 "#M#M#M#M#",
                 "#M#M#M#M#",
-                "P###C###U"
+                "P###C###U",
+                "#A#B#C#D#"
             )
 
             val modSlots = getSlots('M')
+            val polarityConfigIds = getSlots('A') + getSlots('B') + getSlots('C') + getSlots('D')
             val capacitySlotId = getFirstSlot('C')
+            val attributePanelSlotId = getFirstSlot('P')
+            val upgradeSlotId = getFirstSlot('U')
             val filler = buildItem(XMaterial.GRAY_STAINED_GLASS_PANE) { name = " " }
 
             set('#', filler) { isCancelled = true }
             set('P', buildItem(XMaterial.BARRIER) { name = "&e属性面板".colored() }) { isCancelled = true }
             set('U', buildItem(XMaterial.ANVIL) { name = "&6确认强化".colored() }) { isCancelled = true }
+
+            fun updatePolarityDisplay(inventory: org.bukkit.inventory.Inventory) {
+                val loadout = SkillStorage.getModLoadout(player)
+                polarityConfigIds.forEachIndexed { index, slotId ->
+                    val polarity = loadout.slotPolarities[index] ?: "无"
+                    val polaritySymbol = when (polarity) {
+                        "V" -> "&c[V]"
+                        "D" -> "&b[D]"
+                        "-" -> "&a[-]"
+                        "=" -> "&9[=]"
+                        "R" -> "&6[R]"
+                        "Y" -> "&d[Y]"
+                        "*" -> "&f[*]"
+                        else -> "&7[无]"
+                    }
+                    
+                    inventory.setItem(slotId, buildItem(XMaterial.AMETHYST_SHARD) {
+                        name = "&e极性 #${index}: $polaritySymbol".colored()
+                        lore.addAll(listOf(
+                            "",
+                            "&7点击配置此槽位的极性",
+                            "&7当前: $polarity"
+                        ).map { it.colored() })
+                    })
+                }
+            }
 
             fun updateCapacityDisplay(inventory: org.bukkit.inventory.Inventory) {
                 val used = CapacitySystem.calculateUsedCapacity(inventory, modSlots)
@@ -65,11 +96,36 @@ object PlayerMod {
                 }
                 
                 updateCapacityDisplay(inventory)
+                updatePolarityDisplay(inventory)
             }
 
             onClick { event ->
                 if (event.rawSlot >= event.inventory.size) {
                     event.isCancelled = false
+                    return@onClick
+                }
+
+                if (event.rawSlot in polarityConfigIds) {
+                    event.isCancelled = true
+                    val slotIndex = polarityConfigIds.indexOf(event.rawSlot)
+                    val loadout = SkillStorage.getModLoadout(player)
+                    val currentPolarity = loadout.slotPolarities[slotIndex]
+                    
+                    PolaritySelectionMenu.openPolaritySelection(
+                        player = player,
+                        modType = SlotPolarityManager.ModType.PLAYER,
+                        slotIndex = slotIndex,
+                        currentPolarity = currentPolarity
+                    ) { selectedPolarity ->
+                        val updatedLoadout = SkillStorage.getModLoadout(player)
+                        if (selectedPolarity == "无") {
+                            updatedLoadout.slotPolarities.remove(slotIndex)
+                        } else {
+                            updatedLoadout.slotPolarities[slotIndex] = selectedPolarity
+                        }
+                        SkillStorage.saveModLoadout(player, updatedLoadout)
+                        player.sendMessage("&a极性 #$slotIndex 已设置为: &e$selectedPolarity".colored())
+                    }
                     return@onClick
                 }
 
