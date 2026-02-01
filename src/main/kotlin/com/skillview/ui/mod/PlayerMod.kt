@@ -47,10 +47,9 @@ object PlayerMod {
                 inventory.setItem(capacitySlotId, buildItem(XMaterial.EXPERIENCE_BOTTLE) {
                     name = "&e容量: $color$used&7/&f$max".colored()
                     lore.addAll(listOf(
-                        "",
-                        if (used <= max) "&a✔ 容量正常" else "&c✖ 超出容量！",
-                        "&7极性匹配可减少消耗"
-                    ).map { it.colored() })
+                         "",
+                         if (used <= max) "&a✔ 容量正常" else "&c✖ 超出容量！"
+                     ).map { it.colored() })
                 })
             }
 

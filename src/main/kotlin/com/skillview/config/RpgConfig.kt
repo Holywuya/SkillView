@@ -66,15 +66,14 @@ object RpgConfig {
                 attrMap[attrKey] = attrSection.getDouble(attrKey)
             }
 
-            mods[id] = ModSetting(
-                rarity = section.getString("rarity") ?: "普通",
-                polarity = section.getString("polarity") ?: "无",
-                baseDrain = section.getInt("base-drain", 0),
-                drainStep = section.getInt("drain-step", 0),
-                maxLevel = section.getInt("max-level", 0),
-                attributes = attrMap,
-                tags = section.getStringList("tags")
-            )
+             mods[id] = ModSetting(
+                 rarity = section.getString("rarity") ?: "普通",
+                 baseDrain = section.getInt("base-drain", 0),
+                 drainStep = section.getInt("drain-step", 0),
+                 maxLevel = section.getInt("max-level", 0),
+                 attributes = attrMap,
+                 tags = section.getStringList("tags")
+             )
         }
         println("§a[SkillView] 已成功加载 ${mods.size} 个 MOD 配置")
     }

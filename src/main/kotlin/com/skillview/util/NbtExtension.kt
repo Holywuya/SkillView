@@ -95,7 +95,6 @@ fun ItemTag.getDeepString(path: String, default: String = "") =
     this.getDeep(path)?.asString() ?: default
 
 fun ItemStack.getModCost() = this.getDeepInt(NbtPaths.Mod.COST, RpgConstants.GameConfig.DEFAULT_MOD_COST)
-fun ItemStack.getModPolarity() = this.getDeepString(NbtPaths.Mod.POLARITY, RpgConstants.Rarities.COMMON)
 fun ItemStack.getModLevel() = this.getDeepInt(NbtPaths.Mod.LEVEL, 0)
 fun ItemStack.getModId() = this.getDeepString(NbtPaths.Mod.MOD_ID, "")
 

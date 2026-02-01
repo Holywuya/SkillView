@@ -30,15 +30,14 @@ object RpgDefinitions {
         const val LEVEL = NbtPaths.SkillBook.LEVEL
     }
 
-    object ModNBT {
-        const val TYPE = NbtPaths.Mod.TYPE
-        const val RARITY = NbtPaths.Mod.RARITY
-        const val LEVEL = NbtPaths.Mod.LEVEL
-        const val MOD_ID = NbtPaths.Mod.MOD_ID
-        const val ROOT_MOD = NbtPaths.Mod.ROOT_MOD
-        const val COST = NbtPaths.Mod.COST
-        const val POLARITY = NbtPaths.Mod.POLARITY
-    }
+     object ModNBT {
+         const val TYPE = NbtPaths.Mod.TYPE
+         const val RARITY = NbtPaths.Mod.RARITY
+         const val LEVEL = NbtPaths.Mod.LEVEL
+         const val MOD_ID = NbtPaths.Mod.MOD_ID
+         const val ROOT_MOD = NbtPaths.Mod.ROOT_MOD
+         const val COST = NbtPaths.Mod.COST
+     }
 
     val SkillMod_ATTRIBUTES = RpgConstants.AttributeLists.SKILL_MOD_ATTRIBUTES
 

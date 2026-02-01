@@ -47,9 +47,8 @@ object NbtPaths {
         const val ROOT_MOD = "Mod属性"
 
         // ========== MOD属性详细路径 ==========
-        const val COST = "$ROOT_MOD.消耗"
-        const val POLARITY = "$ROOT_MOD.极性"
-        const val DAMAGE_BONUS = "$ROOT_MOD.伤害加成"
+         const val COST = "$ROOT_MOD.消耗"
+         const val DAMAGE_BONUS = "$ROOT_MOD.伤害加成"
         const val DAMAGE_MORE = "$ROOT_MOD.最终伤害"
         const val EXTRA_RANGE = "$ROOT_MOD.额外范围"
         const val SKILL_POWER = "$ROOT_MOD.技能强度"

@@ -20,11 +20,10 @@ data class RpgClass(
 )
 
 data class ModSetting(
-    val rarity: String,
-    val polarity: String,
-    val baseDrain: Int,
-    val drainStep: Int,
-    val maxLevel: Int,
-    val attributes: Map<String, Double>,
-    val tags: List<String>
+     val rarity: String,
+     val baseDrain: Int,
+     val drainStep: Int,
+     val maxLevel: Int,
+     val attributes: Map<String, Double>,
+     val tags: List<String>
 )

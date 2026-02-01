@@ -2,7 +2,7 @@
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Holywuya/SkillView)
 
-**版本: 1.5.2.3**
+**版本: 1.5.2.4**
 
 Warframe风格的技能与MOD系统插件，基于 TabooLib 6.x 开发。
 
@@ -52,6 +52,28 @@ Warframe风格的技能与MOD系统插件，基于 TabooLib 6.x 开发。
 ```
 
 ## 更新日志
+
+### v1.5.2.4
+
+**移除极性系统:**
+- 完全移除 Warframe 风格的极性系统 (Polarity、极性匹配、容量折扣)
+- MOD 容量计算改为使用 MOD 基础消耗值（不再有极性折扣）
+- **删除文件:** PolaritySystem.kt
+- **移除的常量:** POLARITY (NbtPaths.Mod.POLARITY)
+- **移除的方法:** getModPolarity(), PolaritySystem.calculateModCost()
+- **简化的数据模型:** ModSetting 移除 polarity 字段，CapacitySystem 移除 slotPolarities 参数
+- **向后兼容性:** 完全向后兼容，现有 MOD 配置文件无需修改
+
+**修改文件 (9个):**
+- PolaritySystem.kt - **已删除**
+- NbtPaths.kt - 移除 POLARITY 常量
+- RpgDefinitions.kt - 移除 POLARITY 常量
+- RpgConstants.kt - 无变更（极性常量不在此处定义）
+- DataClasses.kt - ModSetting 移除 polarity 字段
+- NbtExtension.kt - 移除 getModPolarity() 方法
+- CapacitySystem.kt - 简化为直接使用 MOD 基础消耗（无极性计算）
+- RpgConfig.kt - 移除 polarity 配置读取
+- UI文件 (WeaponMod.kt, PlayerMod.kt, SkillMod.kt) - 移除极性匹配提示文本
 
 ### v1.5.2.3
 

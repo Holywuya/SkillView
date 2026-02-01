@@ -1,12 +1,10 @@
 package com.skillview.ui.mod
 
 import com.skillview.core.mod.CapacitySystem
-import com.skillview.core.mod.PolaritySystem
 import com.skillview.data.RpgDefinitions
 import com.skillview.data.SkillStorage
 import com.skillview.util.getDeepString
 import com.skillview.util.getModCost
-import com.skillview.util.getModPolarity
 import com.skillview.util.hasCustomTag
 import com.skillview.util.hasTagValue
 import org.bukkit.entity.Player
@@ -30,15 +28,14 @@ import java.util.concurrent.ConcurrentHashMap
 
 object WeaponMod {
 
-    private const val WEAPON_TAG = "武器属性.武器id"
-    private const val MOD_TYPE_VALUE = "武器Mod"
-    private const val DEFAULT_CAPACITY = 60
+     private const val WEAPON_TAG = "武器属性.武器id"
+     private const val MOD_TYPE_VALUE = "武器Mod"
+     private const val DEFAULT_CAPACITY = 60
 
-    data class WeaponModLoadout(
-        val weaponItem: ItemStack? = null,
-        val mods: MutableMap<Int, ItemStack> = mutableMapOf(),
-        val slotPolarities: MutableMap<Int, String> = mutableMapOf()
-    )
+     data class WeaponModLoadout(
+         val weaponItem: ItemStack? = null,
+         val mods: MutableMap<Int, ItemStack> = mutableMapOf()
+     )
 
     private val loadoutCache = ConcurrentHashMap<UUID, WeaponModLoadout>()
 
@@ -75,10 +72,9 @@ object WeaponMod {
                 inventory.setItem(capacitySlotId, buildItem(XMaterial.EXPERIENCE_BOTTLE) {
                     name = "&e容量: $color$used&7/&f$max".colored()
                     lore.addAll(listOf(
-                        "",
-                        if (used <= max) "&a✔ 容量正常" else "&c✖ 超出容量！",
-                        "&7极性匹配可减少消耗"
-                    ).map { it.colored() })
+                         "",
+                         if (used <= max) "&a✔ 容量正常" else "&c✖ 超出容量！"
+                     ).map { it.colored() })
                 })
             }
 
