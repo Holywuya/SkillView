@@ -17,8 +17,6 @@
 # ========== 攻击类 (伤害强化) ==========
 Serration: # 膛线 - 基础伤害
   display: "&c&l膛线"
-  description: "增加武器基础伤害"
-  material: "PAPER"
   rarity: "精良"
   polarity: "V"
   base-drain: 4
@@ -30,8 +28,6 @@ Serration: # 膛线 - 基础伤害
 
 Hellfire: # 火焰伤害
   display: "&6&l地狱火焰"
-  description: "增加火焰伤害"
-  material: "PAPER"
   rarity: "稀有"
   polarity: "V"
   base-drain: 6
@@ -44,8 +40,6 @@ Hellfire: # 火焰伤害
 
 Frostbite: # 冰冻伤害
   display: "&b&l寒冰之刃"
-  description: "增加冰冻伤害和减速效果"
-  material: "PAPER"
   rarity: "稀有"
   polarity: "V"
   base-drain: 6
@@ -58,8 +52,6 @@ Frostbite: # 冰冻伤害
 
 SplitChamber: # 多重射击/最终伤害
   display: "&6&l分裂弹头"
-  description: "增加最终伤害"
-  material: "PAPER"
   rarity: "史诗"
   polarity: "V"
   base-drain: 10
@@ -71,8 +63,6 @@ SplitChamber: # 多重射击/最终伤害
 
 CriticalChance: # 暴击率
   display: "&e&l精准打击"
-  description: "增加暴击率"
-  material: "PAPER"
   rarity: "精良"
   polarity: "V"
   base-drain: 4
@@ -84,8 +74,6 @@ CriticalChance: # 暴击率
 
 CriticalDamage: # 暴击倍数
   display: "&4&l致命一击"
-  description: "增加暴击伤害倍数"
-  material: "PAPER"
   rarity: "精良"
   polarity: "V"
   base-drain: 4
@@ -97,8 +85,6 @@ CriticalDamage: # 暴击倍数
 
 StatusChance: # 状态异常几率
   display: "&d&l诅咒符文"
-  description: "增加造成异常状态的几率"
-  material: "PAPER"
   rarity: "精良"
   polarity: "V"
   base-drain: 4
@@ -111,8 +97,6 @@ StatusChance: # 状态异常几率
 # ========== 防御类 (抗性与护甲) ==========
 SteelSkin: # 钢铁皮肤
   display: "&7&l钢铁皮肤"
-  description: "增加护甲值"
-  material: "PAPER"
   rarity: "精良"
   polarity: "D"
   base-drain: 4
@@ -124,8 +108,6 @@ SteelSkin: # 钢铁皮肤
 
 Redirection: # 转向 - 盾牌
   display: "&9&l方向盾牌"
-  description: "增加盾牌强度"
-  material: "PAPER"
   rarity: "普通"
   polarity: "D"
   base-drain: 2
@@ -137,8 +119,6 @@ Redirection: # 转向 - 盾牌
 
 FlameResistance: # 火焰抗性
   display: "&6&l炎热防护"
-  description: "增加火焰伤害抗性"
-  material: "PAPER"
   rarity: "普通"
   polarity: "D"
   base-drain: 2
@@ -150,8 +130,6 @@ FlameResistance: # 火焰抗性
 
 FrostResistance: # 冰冻抗性
   display: "&b&l极寒防护"
-  description: "增加冰冻伤害抗性"
-  material: "PAPER"
   rarity: "普通"
   polarity: "D"
   base-drain: 2
@@ -163,8 +141,6 @@ FrostResistance: # 冰冻抗性
 
 LightningResistance: # 闪电抗性
   display: "&f&l绝缘防护"
-  description: "增加闪电伤害抗性"
-  material: "PAPER"
   rarity: "普通"
   polarity: "D"
   base-drain: 2
@@ -177,8 +153,6 @@ LightningResistance: # 闪电抗性
 # ========== 生存类 (生命与能量) ==========
 Vitality: # 生命力
   display: "&4&l生命力"
-  description: "增加最大生命值"
-  material: "PAPER"
   rarity: "普通"
   polarity: "D"
   base-drain: 2
@@ -190,8 +164,6 @@ Vitality: # 生命力
 
 Flow: # 川流不息 - 魔力
   display: "&b&l川流不息"
-  description: "增加最大魔力值"
-  material: "PAPER"
   rarity: "普通"
   polarity: "-"
   base-drain: 2
@@ -203,8 +175,6 @@ Flow: # 川流不息 - 魔力
 
 LifeLeech: # 生命窃取
   display: "&c&l生命汲取"
-  description: "造成伤害时回复生命"
-  material: "PAPER"
   rarity: "稀有"
   polarity: "D"
   base-drain: 6
@@ -216,8 +186,6 @@ LifeLeech: # 生命窃取
 
 EnergyRegeneration: # 能量回复
   display: "&6&l能量流动"
-  description: "增加能量自然回复速度"
-  material: "PAPER"
   rarity: "精良"
   polarity: "="
   base-drain: 4
@@ -230,8 +198,6 @@ EnergyRegeneration: # 能量回复
 # ========== 技能类 (效率与增强) ==========
 Streamline: # 简化 - 技能效率
   display: "&d&l简化"
-  description: "降低技能魔力消耗"
-  material: "PAPER"
   rarity: "精良"
   polarity: "="
   base-drain: 4
@@ -243,8 +209,6 @@ Streamline: # 简化 - 技能效率
 
 Stretch: # 延伸 - 范围
   display: "&a&l延伸"
-  description: "增加技能作用范围"
-  material: "PAPER"
   rarity: "普通"
   polarity: "-"
   base-drain: 2
@@ -256,8 +220,6 @@ Stretch: # 延伸 - 范围
 
 Continuity: # 持久 - 持续时间
   display: "&e&l持久化"
-  description: "增加技能持续时间"
-  material: "PAPER"
   rarity: "普通"
   polarity: "-"
   base-drain: 2
@@ -269,8 +231,6 @@ Continuity: # 持久 - 持续时间
 
 Intensify: # 强化 - 力度
   display: "&f&l强化"
-  description: "增加技能的力度和效果"
-  material: "PAPER"
   rarity: "精良"
   polarity: "="
   base-drain: 4
@@ -282,8 +242,6 @@ Intensify: # 强化 - 力度
 
 FleetingExpertise: # 瞬时转场 (复合卡)
   display: "&b&l瞬时转场"
-  description: "降低技能冷却时间，但降低技能效率"
-  material: "PAPER"
   rarity: "史诗"
   polarity: "="
   base-drain: 6
@@ -296,8 +254,6 @@ FleetingExpertise: # 瞬时转场 (复合卡)
 
 Overextend: # 过度延伸
   display: "&g&l越界"
-  description: "极大增加范围但降低伤害"
-  material: "PAPER"
   rarity: "史诗"
   polarity: "-"
   base-drain: 8
@@ -310,8 +266,6 @@ Overextend: # 过度延伸
 
 CorruptedBlood: # 腐化之血 (特殊)
   display: "&4&l腐化之血"
-  description: "增加技能伤害但降低防御"
-  material: "PAPER"
   rarity: "史诗"
   polarity: "V"
   base-drain: 7
@@ -325,8 +279,6 @@ CorruptedBlood: # 腐化之血 (特殊)
 # ========== 工具类 (通用辅助) ==========
 Rush: # 急速
   display: "&f&l急速"
-  description: "增加移动速度"
-  material: "PAPER"
   rarity: "普通"
   polarity: "-"
   base-drain: 2
@@ -338,8 +290,6 @@ Rush: # 急速
 
 Haste: # 迅捷
   display: "&6&l迅捷"
-  description: "增加攻击速度"
-  material: "PAPER"
   rarity: "普通"
   polarity: "-"
   base-drain: 2
@@ -351,8 +301,6 @@ Haste: # 迅捷
 
 Vigilance: # 警惕
   display: "&e&l警惕"
-  description: "增加感知范围"
-  material: "PAPER"
   rarity: "普通"
   polarity: "-"
   base-drain: 2
@@ -365,8 +313,6 @@ Vigilance: # 警惕
 # ========== 特殊类 (游戏特有) ==========
 Reflexes: # 反射神经
   display: "&5&l反射神经"
-  description: "增加跳跃高度和操作反应"
-  material: "PAPER"
   rarity: "稀有"
   polarity: "-"
   base-drain: 6
@@ -379,8 +325,6 @@ Reflexes: # 反射神经
 
 Berserk: # 狂暴 (特殊/堕落)
   display: "&c&l狂暴"
-  description: "大幅提升攻击力但降低防御"
-  material: "PAPER"
   rarity: "史诗"
   polarity: "V"
   base-drain: 8
@@ -393,8 +337,6 @@ Berserk: # 狂暴 (特殊/堕落)
 
 Sacrifice: # 献祭 (特殊/堕落)
   display: "&8&l献祭"
-  description: "增加伤害但代价是生命消耗"
-  material: "PAPER"
   rarity: "史诗"
   polarity: "V"
   base-drain: 8
@@ -407,8 +349,6 @@ Sacrifice: # 献祭 (特殊/堕落)
 
 Sanctuary: # 圣殿 (辅助治疗)
   display: "&f&l圣殿"
-  description: "为周围队友提供护盾"
-  material: "PAPER"
   rarity: "稀有"
   polarity: "="
   base-drain: 6
