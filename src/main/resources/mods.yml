@@ -1,90 +1,420 @@
 # MOD (灵石/振幅晶体) 配置文件
-# 极性说明: V (Madurai/攻击), D (Vazarin/防御), - (Naramon/通用), = (Zenurik/辅助)
+# 重要说明：v1.5.2.4版本已移除极性系统，polarity字段仅作为数据标记使用
+# 极性说明 (历史): V (Madurai/攻击), D (Vazarin/防御), - (Naramon/通用), = (Zenurik/辅助)
+#
+# MOD品质 (rarity):
+#   - 普通 (Common): 基础品质，升级消耗最少
+#   - 精良 (Uncommon): 中等品质，升级消耗中等
+#   - 稀有 (Rare): 高品质，升级消耗较多
+#   - 史诗 (Epic): 最高品质，升级消耗最多
+#
+# 参数说明:
+#   base-drain: 0级时的容量消耗值
+#   drain-step: 每升一级增加的容量消耗 (总消耗 = base-drain + rank * drain-step)
+#   attributes: 每级增加的属性数值 (正数增益，负数为副作用)
+#   tags: MOD分类标签，便于UI筛选和管理
 
-# --- 攻击类 ---
-Serration: # MOD内部ID: 膛线
+# ========== 攻击类 (伤害强化) ==========
+Serration: # 膛线 - 基础伤害
   display: "&c&l膛线"
+  description: "增加武器基础伤害"
   material: "PAPER"
-  rarity: "精良"         # 影响升级时的 Endo 消耗倍率
-  polarity: "V"         # 极性，用于容量减半逻辑
-  base-drain: 4         # 0级时的容量消耗
-  drain-step: 1         # 每升一级增加的容量消耗 (Drain = base + rank * step)
-  attributes:           # 每级增加的属性数值
-    "伤害加成": 15.0     # 每级 +15% (10级时 = 165.0%)
+  rarity: "精良"
+  polarity: "V"
+  base-drain: 4
+  drain-step: 1
+  attributes:
+    "伤害加成": 15.0
   max-level: 10
-  tags: ["攻击", "基础"]
+  tags: ["攻击", "基础", "伤害"]
+
+Hellfire: # 火焰伤害
+  display: "&6&l地狱火焰"
+  description: "增加火焰伤害"
+  material: "PAPER"
+  rarity: "稀有"
+  polarity: "V"
+  base-drain: 6
+  drain-step: 1
+  attributes:
+    "火焰伤害": 40.0
+    "状态几率": 5.0
+  max-level: 5
+  tags: ["攻击", "元素", "火焰"]
+
+Frostbite: # 冰冻伤害
+  display: "&b&l寒冰之刃"
+  description: "增加冰冻伤害和减速效果"
+  material: "PAPER"
+  rarity: "稀有"
+  polarity: "V"
+  base-drain: 6
+  drain-step: 1
+  attributes:
+    "冰冻伤害": 40.0
+    "状态几率": 5.0
+  max-level: 5
+  tags: ["攻击", "元素", "冰冻"]
 
 SplitChamber: # 多重射击/最终伤害
   display: "&6&l分裂弹头"
+  description: "增加最终伤害"
   material: "PAPER"
   rarity: "史诗"
   polarity: "V"
   base-drain: 10
   drain-step: 1
   attributes:
-    "最终伤害": 15.0     # 每级 +15%
+    "最终伤害": 15.0
   max-level: 5
-  tags: ["攻击", "多重"]
+  tags: ["攻击", "多重", "高级"]
 
-# --- 技能类 ---
-Streamline: # 技能效率
-  display: "&d&l简化"
+CriticalChance: # 暴击率
+  display: "&e&l精准打击"
+  description: "增加暴击率"
   material: "PAPER"
   rarity: "精良"
-  polarity: "="
+  polarity: "V"
   base-drain: 4
   drain-step: 1
   attributes:
-    "技能效率": 5.0      # 每级 +5% (5级时 = 30%)
+    "暴击率": 25.0
   max-level: 5
-  tags: ["技能", "效率"]
+  tags: ["攻击", "暴击"]
 
-Stretch: # 额外范围
-  display: "&a&l延伸"
+CriticalDamage: # 暴击倍数
+  display: "&4&l致命一击"
+  description: "增加暴击伤害倍数"
   material: "PAPER"
-  rarity: "普通"
-  polarity: "-"
-  base-drain: 2
+  rarity: "精良"
+  polarity: "V"
+  base-drain: 4
   drain-step: 1
   attributes:
-    "额外范围": 7.5      # 每级 +7.5% (5级时 = 45%)
+    "暴击倍数": 50.0
   max-level: 5
-  tags: ["技能", "范围"]
+  tags: ["攻击", "暴击"]
 
-FleetingExpertise: # 弹瞬瞬变 (复合卡)
-  display: "&b&l瞬时转场"
+StatusChance: # 状态异常几率
+  display: "&d&l诅咒符文"
+  description: "增加造成异常状态的几率"
   material: "PAPER"
-  rarity: "史诗"
-  polarity: "="
-  base-drain: 6
+  rarity: "精良"
+  polarity: "V"
+  base-drain: 4
   drain-step: 1
   attributes:
-    "技能效率": 10.0     # 正面属性: 每级 +10%
-    "冷却缩减": -10.0    # 负面属性: 每级 -10% (Warframe经典的强力卡带副作用)
+    "状态几率": 15.0
   max-level: 5
-  tags: ["技能", "堕落"]
+  tags: ["攻击", "状态"]
 
-# --- 生存类 ---
-Vitality: # 生命
-  display: "&4&l生命力"
+# ========== 防御类 (抗性与护甲) ==========
+SteelSkin: # 钢铁皮肤
+  display: "&7&l钢铁皮肤"
+  description: "增加护甲值"
+  material: "PAPER"
+  rarity: "精良"
+  polarity: "D"
+  base-drain: 4
+  drain-step: 1
+  attributes:
+    "护甲": 65.0
+  max-level: 10
+  tags: ["防御", "护甲"]
+
+Redirection: # 转向 - 盾牌
+  display: "&9&l方向盾牌"
+  description: "增加盾牌强度"
   material: "PAPER"
   rarity: "普通"
   polarity: "D"
   base-drain: 2
   drain-step: 1
   attributes:
-    "最大生命": 40.0     # 每级 +40点
+    "盾牌强度": 40.0
   max-level: 10
-  tags: ["生存"]
+  tags: ["防御", "盾牌"]
 
-Flow: # 蓝量
+FlameResistance: # 火焰抗性
+  display: "&6&l炎热防护"
+  description: "增加火焰伤害抗性"
+  material: "PAPER"
+  rarity: "普通"
+  polarity: "D"
+  base-drain: 2
+  drain-step: 1
+  attributes:
+    "火焰抗性": 50.0
+  max-level: 5
+  tags: ["防御", "抗性", "火焰"]
+
+FrostResistance: # 冰冻抗性
+  display: "&b&l极寒防护"
+  description: "增加冰冻伤害抗性"
+  material: "PAPER"
+  rarity: "普通"
+  polarity: "D"
+  base-drain: 2
+  drain-step: 1
+  attributes:
+    "冰冻抗性": 50.0
+  max-level: 5
+  tags: ["防御", "抗性", "冰冻"]
+
+LightningResistance: # 闪电抗性
+  display: "&f&l绝缘防护"
+  description: "增加闪电伤害抗性"
+  material: "PAPER"
+  rarity: "普通"
+  polarity: "D"
+  base-drain: 2
+  drain-step: 1
+  attributes:
+    "闪电抗性": 50.0
+  max-level: 5
+  tags: ["防御", "抗性", "闪电"]
+
+# ========== 生存类 (生命与能量) ==========
+Vitality: # 生命力
+  display: "&4&l生命力"
+  description: "增加最大生命值"
+  material: "PAPER"
+  rarity: "普通"
+  polarity: "D"
+  base-drain: 2
+  drain-step: 1
+  attributes:
+    "最大生命": 40.0
+  max-level: 10
+  tags: ["生存", "生命"]
+
+Flow: # 川流不息 - 魔力
   display: "&b&l川流不息"
+  description: "增加最大魔力值"
   material: "PAPER"
   rarity: "普通"
   polarity: "-"
   base-drain: 2
   drain-step: 1
   attributes:
-    "魔力上限": 25.0     # 每级 +25点
+    "魔力上限": 25.0
   max-level: 5
   tags: ["生存", "能量"]
+
+LifeLeech: # 生命窃取
+  display: "&c&l生命汲取"
+  description: "造成伤害时回复生命"
+  material: "PAPER"
+  rarity: "稀有"
+  polarity: "D"
+  base-drain: 6
+  drain-step: 1
+  attributes:
+    "生命吸取": 0.3
+  max-level: 5
+  tags: ["生存", "恢复"]
+
+EnergyRegeneration: # 能量回复
+  display: "&6&l能量流动"
+  description: "增加能量自然回复速度"
+  material: "PAPER"
+  rarity: "精良"
+  polarity: "="
+  base-drain: 4
+  drain-step: 1
+  attributes:
+    "能量回复": 1.0
+  max-level: 5
+  tags: ["生存", "能量", "恢复"]
+
+# ========== 技能类 (效率与增强) ==========
+Streamline: # 简化 - 技能效率
+  display: "&d&l简化"
+  description: "降低技能魔力消耗"
+  material: "PAPER"
+  rarity: "精良"
+  polarity: "="
+  base-drain: 4
+  drain-step: 1
+  attributes:
+    "技能效率": 5.0
+  max-level: 5
+  tags: ["技能", "效率"]
+
+Stretch: # 延伸 - 范围
+  display: "&a&l延伸"
+  description: "增加技能作用范围"
+  material: "PAPER"
+  rarity: "普通"
+  polarity: "-"
+  base-drain: 2
+  drain-step: 1
+  attributes:
+    "额外范围": 7.5
+  max-level: 5
+  tags: ["技能", "范围"]
+
+Continuity: # 持久 - 持续时间
+  display: "&e&l持久化"
+  description: "增加技能持续时间"
+  material: "PAPER"
+  rarity: "普通"
+  polarity: "-"
+  base-drain: 2
+  drain-step: 1
+  attributes:
+    "持续时间": 20.0
+  max-level: 5
+  tags: ["技能", "持续"]
+
+Intensify: # 强化 - 力度
+  display: "&f&l强化"
+  description: "增加技能的力度和效果"
+  material: "PAPER"
+  rarity: "精良"
+  polarity: "="
+  base-drain: 4
+  drain-step: 1
+  attributes:
+    "技能力度": 30.0
+  max-level: 5
+  tags: ["技能", "力度"]
+
+FleetingExpertise: # 瞬时转场 (复合卡)
+  display: "&b&l瞬时转场"
+  description: "降低技能冷却时间，但降低技能效率"
+  material: "PAPER"
+  rarity: "史诗"
+  polarity: "="
+  base-drain: 6
+  drain-step: 1
+  attributes:
+    "技能效率": 10.0
+    "冷却缩减": -10.0
+  max-level: 5
+  tags: ["技能", "堕落", "复合"]
+
+Overextend: # 过度延伸
+  display: "&g&l越界"
+  description: "极大增加范围但降低伤害"
+  material: "PAPER"
+  rarity: "史诗"
+  polarity: "-"
+  base-drain: 8
+  drain-step: 1
+  attributes:
+    "额外范围": 30.0
+    "伤害减弱": -10.0
+  max-level: 3
+  tags: ["技能", "范围", "堕落", "复合"]
+
+CorruptedBlood: # 腐化之血 (特殊)
+  display: "&4&l腐化之血"
+  description: "增加技能伤害但降低防御"
+  material: "PAPER"
+  rarity: "史诗"
+  polarity: "V"
+  base-drain: 7
+  drain-step: 1
+  attributes:
+    "技能伤害": 20.0
+    "防御削弱": -15.0
+  max-level: 3
+  tags: ["技能", "伤害", "堕落", "复合"]
+
+# ========== 工具类 (通用辅助) ==========
+Rush: # 急速
+  display: "&f&l急速"
+  description: "增加移动速度"
+  material: "PAPER"
+  rarity: "普通"
+  polarity: "-"
+  base-drain: 2
+  drain-step: 1
+  attributes:
+    "移动速度": 20.0
+  max-level: 5
+  tags: ["工具", "移动"]
+
+Haste: # 迅捷
+  display: "&6&l迅捷"
+  description: "增加攻击速度"
+  material: "PAPER"
+  rarity: "普通"
+  polarity: "-"
+  base-drain: 2
+  drain-step: 1
+  attributes:
+    "攻击速度": 15.0
+  max-level: 5
+  tags: ["工具", "速度"]
+
+Vigilance: # 警惕
+  display: "&e&l警惕"
+  description: "增加感知范围"
+  material: "PAPER"
+  rarity: "普通"
+  polarity: "-"
+  base-drain: 2
+  drain-step: 1
+  attributes:
+    "感知范围": 25.0
+  max-level: 5
+  tags: ["工具", "感知"]
+
+# ========== 特殊类 (游戏特有) ==========
+Reflexes: # 反射神经
+  display: "&5&l反射神经"
+  description: "增加跳跃高度和操作反应"
+  material: "PAPER"
+  rarity: "稀有"
+  polarity: "-"
+  base-drain: 6
+  drain-step: 1
+  attributes:
+    "跳跃高度": 50.0
+    "反应速度": 20.0
+  max-level: 5
+  tags: ["特殊", "机动"]
+
+Berserk: # 狂暴 (特殊/堕落)
+  display: "&c&l狂暴"
+  description: "大幅提升攻击力但降低防御"
+  material: "PAPER"
+  rarity: "史诗"
+  polarity: "V"
+  base-drain: 8
+  drain-step: 1
+  attributes:
+    "攻击力": 50.0
+    "防御削弱": -20.0
+  max-level: 3
+  tags: ["特殊", "堕落", "复合"]
+
+Sacrifice: # 献祭 (特殊/堕落)
+  display: "&8&l献祭"
+  description: "增加伤害但代价是生命消耗"
+  material: "PAPER"
+  rarity: "史诗"
+  polarity: "V"
+  base-drain: 8
+  drain-step: 1
+  attributes:
+    "伤害加成": 30.0
+    "生命消耗": -5.0
+  max-level: 3
+  tags: ["特殊", "堕落", "复合"]
+
+Sanctuary: # 圣殿 (辅助治疗)
+  display: "&f&l圣殿"
+  description: "为周围队友提供护盾"
+  material: "PAPER"
+  rarity: "稀有"
+  polarity: "="
+  base-drain: 6
+  drain-step: 1
+  attributes:
+    "团队护盾": 1.0
+    "治疗范围": 15.0
+  max-level: 5
+  tags: ["特殊", "支援", "治疗"]

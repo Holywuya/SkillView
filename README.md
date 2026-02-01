@@ -2,7 +2,7 @@
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Holywuya/SkillView)
 
-**版本: 1.5.2.4**
+**版本: 1.5.3.0**
 
 Warframe风格的技能与MOD系统插件，基于 TabooLib 6.x 开发。
 
@@ -12,9 +12,9 @@ Warframe风格的技能与MOD系统插件，基于 TabooLib 6.x 开发。
 - **角色MOD**: 全局属性加成（生命力、暴击、技能效率等）
 - **技能MOD**: 单技能属性强化（伤害加成、范围增加等）
 - **武器MOD**: 武器专属MOD配装
-- **极性系统**: Warframe风格的极性匹配，减少容量消耗
 - **容量系统**: MOD消耗限制与管理
 - **MOD升级**: 使用星愿点数强化MOD等级
+- **30+款MOD**: 攻击、防御、生存、技能、工具、特殊等多类别MOD
 
 ## 依赖插件
 
@@ -52,6 +52,23 @@ Warframe风格的技能与MOD系统插件，基于 TabooLib 6.x 开发。
 ```
 
 ## 更新日志
+
+### v1.5.3.0
+
+**MOD配置库扩展:**
+- 将 MOD 配置从 8 个扩展到 **30 个**，增加了 22 个新 MOD
+- **攻击类 (7款):** Serration、Hellfire、Frostbite、SplitChamber、CriticalChance、CriticalDamage、StatusChance
+- **防御类 (5款):** SteelSkin、Redirection、FlameResistance、FrostResistance、LightningResistance
+- **生存类 (4款):** Vitality、Flow、LifeLeech、EnergyRegeneration
+- **技能类 (6款):** Streamline、Stretch、Continuity、Intensify、FleetingExpertise、Overextend、CorruptedBlood
+- **工具类 (3款):** Rush、Haste、Vigilance
+- **特殊类 (4款):** Reflexes、Berserk、Sacrifice、Sanctuary
+
+**优化说明:**
+- 每个 MOD 新增 `description` 字段，便于UI展示
+- 优化了 MOD 品质系统注释和参数说明文档
+- 更新了 mods.yml 的组织结构，按类别分组便于维护
+- 保留了所有 polarity 字段标记（v1.5.2.4版本已移除极性计算）
 
 ### v1.5.2.4
 
