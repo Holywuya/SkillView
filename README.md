@@ -2,7 +2,7 @@
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Holywuya/SkillView)
 
-**版本: 1.5.3.0**
+**版本: 1.5.2.2**
 
 Warframe风格的技能与MOD系统插件，基于 TabooLib 6.x 开发。
 
@@ -52,45 +52,6 @@ Warframe风格的技能与MOD系统插件，基于 TabooLib 6.x 开发。
 ```
 
 ## 更新日志
-
-### v1.5.3.0
-
-**极性槽系统实现:**
-- 为所有MOD菜单添加极性槽位配置UI，允许玩家为每个MOD槽配置极性
-- **武器MOD**: 新增4个极性槽配置按钮（第5行），点击打开极性选择菜单
-- **角色MOD**: 新增4个极性槽配置按钮（第5行），点击打开极性选择菜单
-- **技能MOD**: 新增4个极性槽配置按钮（第5行），点击打开极性选择菜单
-
-**极性选择菜单:**
-- 创建可复用的 PolaritySelectionMenu，所有MOD菜单共用
-- 支持8种极性类型选择：V(红)、D(蓝)、-(绿)、=(蓝紫)、R(橙)、Y(粉)、*(通用)、无
-- 每个极性按钮显示当前极性状态和选择提示
-- 点击选择后自动关闭菜单并保存配置
-
-**数据结构更新:**
-- SkillStorage.ModLoadout 新增 slotPolarities 字段，存储各槽位极性
-- WeaponModLoadout 已有此字段，现已启用
-- SkillMod 极性存储在技能书NBT中："技能MOD.槽位X.极性"
-
-**工作流改进:**
-- 所有MOD菜单在打开时自动刷新极性显示
-- 极性配置立即保存到玩家数据或技能书NBT
-- 极性槽位超容拦截已支持（容量计算传入slotPolarities）
-
-**新增文件:**
-- SlotPolarityManager.kt - 极性槽管理核心（预留，未在菜单中使用）
-- PolaritySelectionMenu.kt - 可复用的极性选择菜单
-
-**修改文件:**
-- WeaponMod.kt - 新增6行UI，添加4个极性配置按钮和极性显示函数
-- PlayerMod.kt - 新增5行UI，添加4个极性配置按钮和极性显示函数
-- SkillMod.kt - 新增5行UI，添加4个极性配置按钮和极性显示函数
-- SkillStorage.kt - ModLoadout 数据类新增 slotPolarities 字段
-
-**后续计划:**
-- 极性槽配置持久化（已支持，需测试）
-- 极性匹配容量折扣应用在菜单中调用 calculateUsedCapacity()
-- 完整集成测试
 
 ### v1.5.2.2
 

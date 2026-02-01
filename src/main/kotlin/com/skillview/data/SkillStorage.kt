@@ -26,11 +26,10 @@ object SkillStorage {
     //          数据结构定义
     // ==========================================
 
-    data class ModLoadout(
-        var isCapacityUpgraded: Boolean = false,
-        val mods: MutableMap<Int, ItemStack> = mutableMapOf(),
-        val slotPolarities: MutableMap<Int, String> = mutableMapOf()
-    )
+     data class ModLoadout(
+         var isCapacityUpgraded: Boolean = false,
+         val mods: MutableMap<Int, ItemStack> = mutableMapOf()
+     )
 
     data class SkillLoadout(
         val slots: MutableMap<Int, ItemStack> = mutableMapOf()

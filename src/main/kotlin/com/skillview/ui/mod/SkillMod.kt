@@ -2,13 +2,11 @@ package com.skillview.ui.mod
 
 import com.skillview.core.mod.CapacitySystem
 import com.skillview.core.mod.SkillModLogic
-import com.skillview.core.mod.SlotPolarityManager
 import com.skillview.data.RpgDefinitions
 import com.skillview.util.getDeepString
 import com.skillview.util.getModCost
 import com.skillview.util.hasCustomTag
 import com.skillview.util.hasTagValue
-import com.skillview.util.setDeep
 import org.bukkit.Sound
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryAction
@@ -30,21 +28,19 @@ object SkillMod {
     private const val MOD_TYPE_VALUE = "技能Mod"
     private const val DEFAULT_CAPACITY = 60
 
-    fun openSkillMod(player: Player) {
-        player.openMenu<Chest>("&8技能MOD配装系统".colored()) {
-            rows(5)
-            map(
-                "#########",
-                "###M#M###",
-                "###M#M###",
-                "###C#B###",
-                "#A#B#C#D#"
-            )
+     fun openSkillMod(player: Player) {
+         player.openMenu<Chest>("&8技能MOD配装系统".colored()) {
+             rows(4)
+             map(
+                 "#########",
+                 "###M#M###",
+                 "###M#M###",
+                 "###C#B###"
+             )
 
-            val modSlotIds = getSlots('M')
-            val polarityConfigIds = getSlots('A') + getSlots('B') + getSlots('C') + getSlots('D')
-            val bookSlotId = getFirstSlot('B')
-            val capacitySlotId = getFirstSlot('C')
+             val modSlotIds = getSlots('M')
+             val bookSlotId = getFirstSlot('B')
+             val capacitySlotId = getFirstSlot('C')
 
             set('#', buildItem(XMaterial.GRAY_STAINED_GLASS_PANE) { name = " " }) { isCancelled = true }
 
@@ -61,44 +57,9 @@ object SkillMod {
                         "&7极性匹配可减少消耗"
                     ).map { it.colored() })
                 })
-            }
+             }
 
-            fun updatePolarityDisplay(inventory: Inventory) {
-                val bookItem = inventory.getItem(bookSlotId)
-                if (bookItem == null || bookItem.isAir()) {
-                    polarityConfigIds.forEach { slotId ->
-                        inventory.setItem(slotId, buildItem(XMaterial.BARRIER) {
-                            name = "&c请先放入技能书".colored()
-                        })
-                    }
-                    return
-                }
-
-                polarityConfigIds.forEachIndexed { index, slotId ->
-                    val polarity = bookItem.getDeepString("技能MOD.槽位$index.极性") ?: "无"
-                    val polaritySymbol = when (polarity) {
-                        "V" -> "&c[V]"
-                        "D" -> "&b[D]"
-                        "-" -> "&a[-]"
-                        "=" -> "&9[=]"
-                        "R" -> "&6[R]"
-                        "Y" -> "&d[Y]"
-                        "*" -> "&f[*]"
-                        else -> "&7[无]"
-                    }
-                    
-                    inventory.setItem(slotId, buildItem(XMaterial.AMETHYST_SHARD) {
-                        name = "&e极性 #${index}: $polaritySymbol".colored()
-                        lore.addAll(listOf(
-                            "",
-                            "&7点击配置此槽位的极性",
-                            "&7当前: $polarity"
-                        ).map { it.colored() })
-                    })
-                }
-            }
-
-            fun refreshModDisplay(inventory: Inventory) {
+             fun refreshModDisplay(inventory: Inventory) {
                 // 1. 先清空 MOD 槽位
                 modSlotIds.forEach { inventory.setItem(it, null) }
 
@@ -120,12 +81,11 @@ object SkillMod {
                             name = "&c请先放入技能书".colored()
                         })
                     }
-                }
-                updateCapacityDisplay(inventory)
-                updatePolarityDisplay(inventory)
-            }
+                 }
+                 updateCapacityDisplay(inventory)
+             }
 
-            // 2. onBuild 直接调用刷新函数
+             // 2. onBuild 直接调用刷新函数
             onBuild { _, inventory ->
                 refreshModDisplay(inventory)
             }
@@ -136,41 +96,13 @@ object SkillMod {
                 val inventory = event.inventory
                 val cursor = event.clicker.itemOnCursor
 
-                // 背包点击处理...
-                if (rawSlot >= event.inventory.size) {
-                    event.isCancelled = event.clickEvent().action == InventoryAction.MOVE_TO_OTHER_INVENTORY
-                    return@onClick
-                }
+                 // 背包点击处理...
+                 if (rawSlot >= event.inventory.size) {
+                     event.isCancelled = event.clickEvent().action == InventoryAction.MOVE_TO_OTHER_INVENTORY
+                     return@onClick
+                 }
 
-                if (rawSlot in polarityConfigIds) {
-                    event.isCancelled = true
-                    val bookItem = inventory.getItem(bookSlotId)
-                    if (bookItem == null || bookItem.isAir()) {
-                        player.sendMessage("&c请先放入一本技能书！".colored())
-                        return@onClick
-                    }
-
-                    val slotIndex = polarityConfigIds.indexOf(rawSlot)
-                    val currentPolarity = bookItem.getDeepString("技能MOD.槽位$slotIndex.极性") ?: "无"
-                    
-                    PolaritySelectionMenu.openPolaritySelection(
-                        player = player,
-                        modType = SlotPolarityManager.ModType.SKILL,
-                        slotIndex = slotIndex,
-                        currentPolarity = currentPolarity
-                    ) { selectedPolarity ->
-                        if (selectedPolarity == "无") {
-                            bookItem.setDeep("技能MOD.槽位$slotIndex.极性", "")
-                        } else {
-                            bookItem.setDeep("技能MOD.槽位$slotIndex.极性", selectedPolarity)
-                        }
-                        player.sendMessage("&a极性 #$slotIndex 已设置为: &e$selectedPolarity".colored())
-                        submit(delay = 1) { updatePolarityDisplay(inventory) }
-                    }
-                    return@onClick
-                }
-
-                // --- 情况 A: 操作技能书槽位 (U) ---
+                 // --- 情况 A: 操作技能书槽位 (U) ---
                 if (rawSlot == bookSlotId) {
                     // 1. 放入书
                     if (!cursor.isAir()) {
