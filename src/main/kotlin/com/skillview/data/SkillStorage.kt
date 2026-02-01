@@ -121,42 +121,42 @@ object SkillStorage {
     /**
      * 从数据库加载技能装备 (内部方法)
      */
-    private fun loadSkillLoadoutFromDB(player: Player): SkillLoadout {
-        val json = player.getDataContainer()["active_skill_loadout"] ?: ""
-        return parseJson(json, SkillLoadout())
-    }
+     private fun loadSkillLoadoutFromDB(player: Player): SkillLoadout {
+         val json = player.getDataContainer()[RpgConstants.StorageKeys.SKILL_LOADOUT_KEY] ?: ""
+         return parseJson(json, SkillLoadout())
+     }
 
     /**
      * 刷新技能ID缓存 (预解析所有槽位的技能ID)
      */
-    private fun refreshSkillIdCache(player: Player, loadout: SkillLoadout) {
-        val ids = Array(5) { i ->
-            loadout.slots[i]?.let { item ->
-                if (item.isAir()) return@let null
-                val id = item.getDeepString("技能书基础属性.技能id")
-                if (id.isEmpty() || id == "none") null else id
-            }
-        }
-        skillIdCache[player.uniqueId] = ids
-    }
+     private fun refreshSkillIdCache(player: Player, loadout: SkillLoadout) {
+         val ids = Array(5) { i ->
+             loadout.slots[i]?.let { item ->
+                 if (item.isAir()) return@let null
+                 val id = item.getDeepString(NbtPaths.SkillBook.SKILL_ID)
+                 if (id.isEmpty() || id == "none") null else id
+             }
+         }
+         skillIdCache[player.uniqueId] = ids
+     }
 
-    fun saveSkillLoadout(player: Player, loadout: SkillLoadout) {
-        player.getDataContainer()["active_skill_loadout"] = GsonUtils.toJson(loadout)
+     fun saveSkillLoadout(player: Player, loadout: SkillLoadout) {
+         player.getDataContainer()[RpgConstants.StorageKeys.SKILL_LOADOUT_KEY] = GsonUtils.toJson(loadout)
         // 保存后更新缓存
         skillLoadoutCache[player.uniqueId] = loadout
         refreshSkillIdCache(player, loadout)
         dirtySkillPlayers.remove(player.uniqueId)
     }
 
-    fun updateSkillSlot(player: Player, slotIndex: Int, item: ItemStack?) {
-        val loadout = getSkillLoadout(player)
-        if (item == null || item.isAir() || !item.hasCustomTag("技能书基础属性.技能id")) {
-            loadout.slots.remove(slotIndex)
-        } else {
-            loadout.slots[slotIndex] = item
-        }
-        saveSkillLoadout(player, loadout)
-    }
+     fun updateSkillSlot(player: Player, slotIndex: Int, item: ItemStack?) {
+         val loadout = getSkillLoadout(player)
+         if (item == null || item.isAir() || !item.hasCustomTag(NbtPaths.SkillBook.SKILL_ID)) {
+             loadout.slots.remove(slotIndex)
+         } else {
+             loadout.slots[slotIndex] = item
+         }
+         saveSkillLoadout(player, loadout)
+     }
 
     fun getSkillItem(player: Player, slotIndex: Int): ItemStack? =
         getSkillLoadout(player).slots[slotIndex]
@@ -202,13 +202,13 @@ object SkillStorage {
     /**
      * 从数据库加载MOD装备 (内部方法)
      */
-    private fun loadModLoadoutFromDB(player: Player): ModLoadout {
-        val json = player.getDataContainer()["player_mod_loadout"] ?: ""
-        return parseJson(json, ModLoadout())
-    }
+     private fun loadModLoadoutFromDB(player: Player): ModLoadout {
+         val json = player.getDataContainer()[RpgConstants.StorageKeys.MOD_LOADOUT_KEY] ?: ""
+         return parseJson(json, ModLoadout())
+     }
 
-    fun saveModLoadout(player: Player, loadout: ModLoadout) {
-        player.getDataContainer()["player_mod_loadout"] = GsonUtils.toJson(loadout)
+     fun saveModLoadout(player: Player, loadout: ModLoadout) {
+         player.getDataContainer()[RpgConstants.StorageKeys.MOD_LOADOUT_KEY] = GsonUtils.toJson(loadout)
         // 保存后更新缓存
         modLoadoutCache[player.uniqueId] = loadout
         dirtyModPlayers.remove(player.uniqueId)
@@ -231,19 +231,19 @@ object SkillStorage {
     //          星愿点数管理
     // ==========================================
 
-    fun getStarPoints(player: Player): Int {
-        val container = player.getDataContainer()
-        val rawValue = container["star_points"]
-        if (rawValue == null) {
-            container["star_points"] = "0"
-            return 0
-        }
-        return rawValue.toIntOrNull() ?: 0
-    }
+     fun getStarPoints(player: Player): Int {
+         val container = player.getDataContainer()
+         val rawValue = container[RpgConstants.StorageKeys.STAR_POINTS_KEY]
+         if (rawValue == null) {
+             container[RpgConstants.StorageKeys.STAR_POINTS_KEY] = "0"
+             return 0
+         }
+         return rawValue.toIntOrNull() ?: 0
+     }
 
-    fun setStarPoints(player: Player, amount: Int) {
-        player.getDataContainer()["star_points"] = amount.coerceAtLeast(0).toString()
-    }
+     fun setStarPoints(player: Player, amount: Int) {
+         player.getDataContainer()[RpgConstants.StorageKeys.STAR_POINTS_KEY] = amount.coerceAtLeast(0).toString()
+     }
 
     fun addStarPoints(player: Player, amount: Int) {
         setStarPoints(player, getStarPoints(player) + amount)

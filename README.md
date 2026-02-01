@@ -2,7 +2,7 @@
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Holywuya/SkillView)
 
-**版本: 1.5.2.2**
+**版本: 1.5.2.3**
 
 Warframe风格的技能与MOD系统插件，基于 TabooLib 6.x 开发。
 
@@ -52,6 +52,25 @@ Warframe风格的技能与MOD系统插件，基于 TabooLib 6.x 开发。
 ```
 
 ## 更新日志
+
+### v1.5.2.3
+
+**配置与常量优化 (代码规范化):**
+- 统一所有 NBT 路径定义到 `NbtPaths.kt`（18+ 处硬编码字符串）
+- 统一所有配置常量到 `RpgConstants.kt`（GameConfig, StorageKeys, ModTypes, Rarities）
+- 创建 `RpgDefinitions.kt` 作为公共 API，简化常量访问
+- **优化效果：** 单一真实来源 (SSOT) 原则，减少维护成本，提升代码质量
+
+**修改文件 (7个):**
+- NbtPaths.kt - 添加 MOD_SLOT_FORMAT、文档完善
+- RpgConstants.kt - 添加 4 个新的常量对象
+- RpgDefinitions.kt - 添加常量 API 代理
+- NbtExtension.kt - 使用统一 NBT 常量
+- SkillStorage.kt - 使用统一存储键常量
+- SkillModLogic.kt - 使用 MOD_SLOT_FORMAT
+- SkillCaster.kt - 使用统一技能书 NBT 常量
+
+**向后兼容性:** 完全兼容，无 breaking changes
 
 ### v1.5.2.2
 

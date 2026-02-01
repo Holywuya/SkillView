@@ -1,15 +1,13 @@
 package com.skillview.util
 
+import com.skillview.data.NbtPaths
+import com.skillview.data.RpgConstants
 import org.bukkit.inventory.ItemStack
 import taboolib.module.nms.ItemTag
 import taboolib.module.nms.getItemTag
 import taboolib.platform.util.isAir
 import java.util.*
 
-/**
- * ItemTag 缓存系统
- * 避免每次NBT访问都创建新的ItemTag对象
- */
 private object ItemTagCache {
     private data class CachedTag(val tag: ItemTag, val hashCode: Int)
     
@@ -96,12 +94,12 @@ fun ItemTag.getDeepInt(path: String, default: Int = 0) =
 fun ItemTag.getDeepString(path: String, default: String = "") =
     this.getDeep(path)?.asString() ?: default
 
-fun ItemStack.getModCost() = this.getDeepInt("Mod属性.消耗", 0)
-fun ItemStack.getModPolarity() = this.getDeepString("Mod属性.极性", "无")
-fun ItemStack.getModLevel() = this.getDeepInt("Mod.等级", 0)
-fun ItemStack.getModId() = this.getDeepString("Mod.id", "")
+fun ItemStack.getModCost() = this.getDeepInt(NbtPaths.Mod.COST, RpgConstants.GameConfig.DEFAULT_MOD_COST)
+fun ItemStack.getModPolarity() = this.getDeepString(NbtPaths.Mod.POLARITY, RpgConstants.Rarities.COMMON)
+fun ItemStack.getModLevel() = this.getDeepInt(NbtPaths.Mod.LEVEL, 0)
+fun ItemStack.getModId() = this.getDeepString(NbtPaths.Mod.MOD_ID, "")
 
-fun ItemStack.getSkillId(): String = this.getDeepString("技能书基础属性.技能id", "")
+fun ItemStack.getSkillId(): String = this.getDeepString(NbtPaths.SkillBook.SKILL_ID, "")
 
 fun ItemTag.addDeep(path: String, value: Double) {
     val current = this.getDeep(path)?.asDouble() ?: 0.0
@@ -111,12 +109,4 @@ fun ItemTag.addDeep(path: String, value: Double) {
 fun ItemTag.addDeepInt(path: String, value: Int) {
     val current = this.getDeep(path)?.asInt() ?: 0
     this.putDeep(path, current + value)
-}
-
-fun ItemStack.addDeep(path: String, value: Double) {
-    if (this.isAir()) return
-    ItemTagCache.invalidate(this)
-    val tag = this.getItemTag()
-    tag.addDeep(path, value)
-    tag.saveTo(this)
 }

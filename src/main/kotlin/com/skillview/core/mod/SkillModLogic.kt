@@ -11,13 +11,14 @@ import top.maplex.arim.tools.gson.GsonUtils
 object SkillModLogic {
 
     private const val NBT_MOD_ROOT = RpgDefinitions.SkillBookNBT.MOD_SLOTS
+    private const val MOD_SLOT_FORMAT = RpgDefinitions.SkillBookNBT.MOD_SLOT_FORMAT
 
     fun installModToBook(book: ItemStack, modItem: ItemStack, slotIndex: Int): Boolean {
         if (book.isAir() || modItem.isAir()) return false
 
         val bookTag = book.getItemTag()
         val modJson = GsonUtils.toJson(modItem)
-        bookTag.putDeep("$NBT_MOD_ROOT.插槽.$slotIndex", modJson)
+        bookTag.putDeep("$MOD_SLOT_FORMAT.$slotIndex", modJson)
         bookTag.saveTo(book)
         return true
     }
@@ -26,12 +27,12 @@ object SkillModLogic {
         if (book.isAir()) return
 
         val bookTag = book.getItemTag()
-        bookTag.removeDeep("$NBT_MOD_ROOT.插槽.$slotIndex")
+        bookTag.removeDeep("$MOD_SLOT_FORMAT.$slotIndex")
         bookTag.saveTo(book)
     }
 
     fun getSkillModInSlot(book: ItemStack, index: Int): ItemStack? {
-        val json = book.getDeepString("$NBT_MOD_ROOT.插槽.$index")
+        val json = book.getDeepString("$MOD_SLOT_FORMAT.$index")
         if (json.isEmpty()) return null
         return GsonUtils.fromJson(json, ItemStack::class.java)
     }
@@ -39,7 +40,7 @@ object SkillModLogic {
     fun getModInSlot(book: ItemStack, index: Int): ItemStack? {
         if (book.isAir()) return null
 
-        val modJson = book.getDeepString("$NBT_MOD_ROOT.插槽.$index")
+        val modJson = book.getDeepString("$MOD_SLOT_FORMAT.$index")
         if (modJson.isEmpty() || modJson == "null") return null
 
         return try {

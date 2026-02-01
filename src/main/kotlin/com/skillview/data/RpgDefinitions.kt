@@ -4,11 +4,6 @@ import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
 import taboolib.module.configuration.Configuration
 
-/**
- * RPG 系统常量与定义
- * 集中管理 NBT 键名、属性列表、路径常量
- * 所有魔法值均在此处定义，避免散落
- */
 object RpgDefinitions {
 
     @taboolib.module.configuration.Config("config.yml")
@@ -24,26 +19,17 @@ object RpgDefinitions {
         }
     }
 
-    // ==========================================
-    //          NBT 路径常量（分层管理）
-    // ==========================================
-
-    /**
-     * 技能书专属 NBT 常量
-     */
     object SkillBookNBT {
         const val TYPE = NbtPaths.SkillBook.TYPE
         const val RARITY = NbtPaths.SkillBook.RARITY
         const val ROOT_BASIC = NbtPaths.SkillBook.ROOT_BASIC
         const val ROOT_MODIFIER = NbtPaths.SkillBook.ROOT_MODIFIER
         const val MOD_SLOTS = NbtPaths.SkillBook.MOD_SLOTS
+        const val MOD_SLOT_FORMAT = NbtPaths.SkillBook.MOD_SLOT_FORMAT
         const val SKILL_ID = NbtPaths.SkillBook.SKILL_ID
         const val LEVEL = NbtPaths.SkillBook.LEVEL
     }
 
-    /**
-     * MOD（角色Mod & 技能Mod/强化石）专属 NBT 常量
-     */
     object ModNBT {
         const val TYPE = NbtPaths.Mod.TYPE
         const val RARITY = NbtPaths.Mod.RARITY
@@ -54,28 +40,10 @@ object RpgDefinitions {
         const val POLARITY = NbtPaths.Mod.POLARITY
     }
 
-    // ==========================================
-    //          属性白名单（用于强化逻辑）
-    // ==========================================
-
-    /**
-     * 可强化属性白名单
-     */
     val SkillMod_ATTRIBUTES = RpgConstants.AttributeLists.SKILL_MOD_ATTRIBUTES
 
-    /**
-     * 角色Mod 提供的全局属性列表
-     */
     val PlayerMod_ATTRIBUTES = RpgConstants.AttributeLists.PLAYER_MOD_ATTRIBUTES
 
-    // ==========================================
-    //          AttributePlus 属性名常量
-    // ==========================================
-
-    /**
-     * AttributePlus 注册的自定义属性名
-     * 统一在此管理，避免字符串散落
-     */
     object Attributes {
         const val COOLDOWN = RpgConstants.AttributeNames.COOLDOWN
         const val EFFICIENCY = RpgConstants.AttributeNames.EFFICIENCY

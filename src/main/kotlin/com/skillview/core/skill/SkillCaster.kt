@@ -4,6 +4,7 @@ import com.skillview.config.RpgConfig
 import com.skillview.core.mod.PlayerModLogic
 import com.skillview.core.mod.SkillModLogic
 import com.skillview.core.rpg.RpgRuntime
+import com.skillview.data.NbtPaths
 import com.skillview.data.RpgDefinitions
 import com.skillview.data.SkillStorage
 import com.skillview.util.*
@@ -47,14 +48,14 @@ object SkillCaster {
 
     private fun readSkillBookNBT(item: ItemStack?): SkillBookNBT {
         return SkillBookNBT(
-            manaReduction = item?.getDeepInt("$ROOT_MODIFIER.魔力减耗", 0) ?: 0,
-            dmgMore = item?.getDeepDouble("$ROOT_MODIFIER.最终伤害", 0.0) ?: 0.0,
-            dmgBonus = item?.getDeepDouble("$ROOT_MODIFIER.伤害加成", 0.0) ?: 0.0,
-            rangeRaw = item?.getDeepDouble("$ROOT_MODIFIER.额外范围", 0.0) ?: 0.0,
-            skillPower = item?.getDeepDouble("$ROOT_MODIFIER.技能强度", 0.0) ?: 0.0,
-            multiplier = item?.getDeepDouble("$ROOT_MODIFIER.技能倍率", 0.0) ?: 0.0,
-            level = item?.getDeepInt("$ROOT_BASIC.等级", 0) ?: 0,
-            cdReduction = item?.getDeepDouble("$ROOT_MODIFIER.冷却缩减", 0.0) ?: 0.0
+            manaReduction = item?.getDeepInt(NbtPaths.SkillBook.MANA_REDUCTION, 0) ?: 0,
+            dmgMore = item?.getDeepDouble(NbtPaths.SkillBook.DAMAGE_MORE, 0.0) ?: 0.0,
+            dmgBonus = item?.getDeepDouble(NbtPaths.SkillBook.DAMAGE_BONUS, 0.0) ?: 0.0,
+            rangeRaw = item?.getDeepDouble(NbtPaths.SkillBook.EXTRA_RANGE, 0.0) ?: 0.0,
+            skillPower = item?.getDeepDouble(NbtPaths.SkillBook.SKILL_POWER, 0.0) ?: 0.0,
+            multiplier = item?.getDeepDouble(NbtPaths.SkillBook.MULTIPLIER, 0.0) ?: 0.0,
+            level = item?.getDeepInt(NbtPaths.SkillBook.LEVEL, 0) ?: 0,
+            cdReduction = item?.getDeepDouble(NbtPaths.SkillBook.COOLDOWN_REDUCTION, 0.0) ?: 0.0
         )
     }
 
